@@ -1,0 +1,46 @@
+# ============================================================================
+#  Caddy — Reverse-Proxy mit automatischem HTTPS (Let's Encrypt).
+#  {$DOMAIN} / {$ACME_EMAIL} kommen aus der Umgebung (docker-compose → .env).
+#  Subdomains müssen per DNS-A-Record auf die Server-IP zeigen.
+# ============================================================================
+
+{
+	email {$ACME_EMAIL}
+}
+
+# --- Werkstatt-App (statisch) ---------------------------------------------
+app.{$DOMAIN} {
+	root * /srv/static
+	try_files {path} /index.html
+	file_server
+	encode gzip
+	header {
+		Referrer-Policy strict-origin-when-cross-origin
+		X-Content-Type-Options nosniff
+	}
+}
+
+# --- Öffentliche Online-Terminbuchung -------------------------------------
+termin.{$DOMAIN} {
+	root * /srv/static
+	rewrite / /buchung.html
+	file_server
+	encode gzip
+}
+
+# --- Teile-Connector (Node) -----------------------------------------------
+connector.{$DOMAIN} {
+	reverse_proxy connector:8790
+	encode gzip
+}
+
+# --- ZUGFeRD-/E-Rechnung-Dienst (Node) ------------------------------------
+rechnung.{$DOMAIN} {
+	reverse_proxy zugferd:8787
+	encode gzip
+}
+
+# --- n8n (Automatisierung, zusätzlich per Basic-Auth geschützt) -----------
+n8n.{$DOMAIN} {
+	reverse_proxy n8n:5678
+}

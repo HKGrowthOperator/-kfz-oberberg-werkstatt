@@ -1,0 +1,16 @@
+{
+  "name": "kfz-zugferd-service",
+  "version": "1.0.0",
+  "description": "ZUGFeRD/Factur-X (EN 16931) PDF/A-3 E-Rechnung für KFZ-Service Oberberg",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node selftest.js"
+  },
+  "dependencies": {
+    "@pdf-lib/fontkit": "^1.1.1",
+    "express": "^4.19.2",
+    "pdf-lib": "^1.17.1"
+  }
+}

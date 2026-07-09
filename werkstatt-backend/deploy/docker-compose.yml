@@ -1,0 +1,86 @@
+# ============================================================================
+#  KFZ-Service Oberberg — Werkstatt-System · Ein-Server-Deployment
+#  Caddy (Auto-HTTPS) + statische App + ZUGFeRD-Dienst + Teile-Connector + n8n.
+#  Supabase läuft extern (managed). Werte kommen aus ./.env  (siehe .env.example)
+#  Start:  docker compose up -d --build
+# ============================================================================
+services:
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN}
+      ACME_EMAIL: ${ACME_EMAIL}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./static:/srv/static:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - zugferd
+      - connector
+      - n8n
+
+  zugferd:
+    build: ../zugferd-service
+    restart: unless-stopped
+    environment:
+      PORT: "8787"
+      ALLOW_ORIGIN: "https://app.${DOMAIN}"
+    expose:
+      - "8787"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8787/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  connector:
+    build: ../teile-connector
+    restart: unless-stopped
+    environment:
+      PORT: "8790"
+      ALLOW_ORIGIN: "https://app.${DOMAIN}"
+      # Live-Teile: erst setzen, wenn Lizenz/Konto vorhanden (siehe .env.example)
+      TECDOC_API_KEY: ${TECDOC_API_KEY:-}
+      TECDOC_PROVIDER_ID: ${TECDOC_PROVIDER_ID:-}
+      SUPPLIER_ORDER_URL: ${SUPPLIER_ORDER_URL:-}
+      SUPPLIER_TOKEN: ${SUPPLIER_TOKEN:-}
+      SUPPLIER_CUSTOMER_NO: ${SUPPLIER_CUSTOMER_NO:-}
+    expose:
+      - "8790"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8790/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    restart: unless-stopped
+    environment:
+      N8N_HOST: "n8n.${DOMAIN}"
+      N8N_PROTOCOL: "https"
+      WEBHOOK_URL: "https://n8n.${DOMAIN}/"
+      N8N_PORT: "5678"
+      N8N_BASIC_AUTH_ACTIVE: "true"
+      N8N_BASIC_AUTH_USER: ${N8N_BASIC_AUTH_USER}
+      N8N_BASIC_AUTH_PASSWORD: ${N8N_BASIC_AUTH_PASSWORD}
+      GENERIC_TIMEZONE: "Europe/Berlin"
+      # Umgebungsvariablen, die der Workflow nutzt:
+      BETRIEB_ID: ${BETRIEB_ID}
+      WHATSAPP_PHONE_ID: ${WHATSAPP_PHONE_ID:-}
+      WHATSAPP_TOKEN: ${WHATSAPP_TOKEN:-}
+    expose:
+      - "5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+volumes:
+  caddy_data:
+  caddy_config:
+  n8n_data:

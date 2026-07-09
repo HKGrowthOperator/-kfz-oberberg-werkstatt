@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Termin buchen · KFZ-Service Oberberg</title>
+<!--
+  ÖFFENTLICHE ONLINE-TERMINBUCHUNG
+  Diese Seite hostet ihr selbst (z.B. Netlify/Vercel/eigener Webspace) und
+  verlinkt sie von der Homepage. Buchungen landen in der Tabelle "termin"
+  (quelle='online', status='angefragt') und erscheinen sofort in der App
+  unter "Termine". Bestätigen/Ablehnen passiert in der App.
+
+  EINRICHTUNG: unten URL + ANON-KEY + BETRIEB-ID eintragen (siehe ANLEITUNG.md).
+  Für die öffentliche Anlage von Terminen ist eine schlanke RLS-Insert-Policy
+  nötig (siehe ANLEITUNG.md, Abschnitt "2. Online-Buchung").
+-->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap');
+  :root{--brand:#157A4E;--brand2:#1FA368;--ink:#16150F;--text:#2B2A24;--faint:#8E8B80;--line:#E1DDD3;--tint:#F7F5F0;--bg:#ECE9E2}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Hanken Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:grid;place-items:center;padding:24px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:18px;max-width:520px;width:100%;padding:30px;box-shadow:0 20px 50px -30px rgba(22,21,15,.4)}
+  .brand{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+  .sq{width:44px;height:44px;border-radius:12px;background:var(--brand);color:#fff;display:grid;place-items:center;font-family:'Bricolage Grotesque';font-weight:800;font-size:22px}
+  .brand b{font-family:'Bricolage Grotesque';font-weight:800;color:var(--ink);font-size:17px;display:block;line-height:1.1}
+  .brand small{color:var(--faint);font-size:12px}
+  h1{font-family:'Bricolage Grotesque';font-style:italic;font-weight:800;font-size:26px;color:var(--ink);margin:20px 0 4px;letter-spacing:-.02em}
+  .lead{color:var(--faint);font-size:14px;margin-bottom:20px}
+  label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);margin:14px 0 5px}
+  input,select,textarea{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--text);font-family:inherit;font-size:15px}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--brand);border-color:var(--brand)}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:440px){.g2{grid-template-columns:1fr}}
+  button{margin-top:22px;width:100%;padding:14px;border:none;border-radius:11px;background:var(--brand);color:#fff;font-family:inherit;font-weight:700;font-size:16px;cursor:pointer}
+  button:hover{background:#0f5f3c}button:disabled{opacity:.6;cursor:default}
+  .ok,.err{margin-top:16px;padding:14px 16px;border-radius:11px;font-size:14px;display:none}
+  .ok{background:#E6F1EA;border:1px solid #cfe6d8;color:var(--brand)}
+  .err{background:#f7e3df;border:1px solid #efc9c0;color:#B3341F}
+  .foot{margin-top:20px;font-size:12px;color:var(--faint);text-align:center}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="brand"><div class="sq">K</div><div><b>KFZ-Service Oberberg</b><small>Ihre Werkstatt in Gummersbach</small></div></div>
+    <h1>Termin anfragen</h1>
+    <div class="lead">Wählen Sie Wunschtermin und Leistung. Wir bestätigen Ihre Anfrage kurzfristig telefonisch oder per E-Mail.</div>
+
+    <form id="f">
+      <div class="g2">
+        <div><label>Name</label><input name="kunde" required autocomplete="name"></div>
+        <div><label>Telefon</label><input name="tel" required inputmode="tel" autocomplete="tel"></div>
+      </div>
+      <label>E-Mail (optional)</label><input name="email" type="email" autocomplete="email">
+      <div class="g2">
+        <div><label>Kennzeichen</label><input name="kennzeichen" placeholder="GM-XX 123"></div>
+        <div><label>Fahrzeug</label><input name="fahrzeug" placeholder="VW Golf 1.6 TDI"></div>
+      </div>
+      <label>Leistung</label>
+      <select name="leistung" required>
+        <option value="">Bitte wählen…</option>
+        <option>Inspektion</option><option>Ölwechsel</option>
+        <option>HU / AU (TÜV)</option><option>Reifenwechsel / Einlagerung</option>
+        <option>Bremsen</option><option>Klimaservice</option>
+        <option>Fehlersuche / Diagnose</option><option>Sonstiges</option>
+      </select>
+      <div class="g2">
+        <div><label>Wunschdatum</label><input name="datum" type="date" required></div>
+        <div><label>Uhrzeit</label>
+          <select name="zeit" required>
+            <option value="">–</option>
+            <option>08:00</option><option>09:00</option><option>10:00</option><option>11:00</option>
+            <option>13:00</option><option>14:00</option><option>15:00</option><option>16:00</option>
+          </select>
+        </div>
+      </div>
+      <label>Anmerkung (optional)</label><textarea name="notiz" rows="2" placeholder="Was sollen wir prüfen?"></textarea>
+      <button type="submit" id="btn">Termin anfragen</button>
+    </form>
+    <div class="ok"  id="ok">✓ Vielen Dank! Ihre Terminanfrage ist eingegangen. Wir melden uns zur Bestätigung.</div>
+    <div class="err" id="err"></div>
+    <div class="foot">KFZ-Service Oberberg · Gummersbach · Inhaber Ahmet Sultan Celik</div>
+  </div>
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+/* ====== HIER EINTRAGEN (siehe ANLEITUNG.md) ============================== */
+const SUPABASE_URL  = 'https://DEIN-PROJEKT.supabase.co';
+const SUPABASE_ANON = 'DEIN-ANON-KEY';
+const BETRIEB_ID    = 'DEINE-BETRIEB-UUID';
+/* ======================================================================== */
+
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
+const f = document.getElementById('f'), ok = document.getElementById('ok'),
+      err = document.getElementById('err'), btn = document.getElementById('btn');
+// Wunschdatum frühestens morgen
+const tmr = new Date(Date.now()+864e5).toISOString().slice(0,10);
+f.datum.min = tmr; f.datum.value = tmr;
+
+f.addEventListener('submit', async e => {
+  e.preventDefault();
+  ok.style.display = err.style.display = 'none';
+  btn.disabled = true; btn.textContent = 'Wird gesendet…';
+  const d = Object.fromEntries(new FormData(f).entries());
+  const id = 'ol-' + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+  const row = {
+    id, betrieb_id: BETRIEB_ID, datum: d.datum, zeit: d.zeit,
+    kunde_name: d.kunde, tel: d.tel, kennzeichen: d.kennzeichen || null,
+    leistung: d.leistung, status: 'angefragt', quelle: 'online',
+    daten: { id, datum: d.datum, zeit: d.zeit, kunde: d.kunde, tel: d.tel,
+             email: d.email || '', kennzeichen: d.kennzeichen || '',
+             fahrzeug: d.fahrzeug || '', leistung: d.leistung,
+             notiz: d.notiz || '', status: 'angefragt', quelle: 'online' }
+  };
+  const { error } = await sb.from('termin').insert(row);
+  btn.disabled = false; btn.textContent = 'Termin anfragen';
+  if (error) { err.textContent = 'Leider ein Fehler: ' + error.message + ' — bitte rufen Sie uns an.'; err.style.display = 'block'; return; }
+  f.reset(); f.datum.min = tmr; f.datum.value = tmr; ok.style.display = 'block';
+});
+</script>
+</body>
+</html>

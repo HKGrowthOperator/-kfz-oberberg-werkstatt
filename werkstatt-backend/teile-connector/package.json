@@ -1,0 +1,14 @@
+{
+  "name": "kfz-teile-connector",
+  "version": "1.0.0",
+  "description": "Teilekatalog- & Lieferanten-Connector (Mock / TecDoc / Großhändler) für KFZ-Service Oberberg",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node selftest.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

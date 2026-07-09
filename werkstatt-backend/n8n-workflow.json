@@ -1,0 +1,213 @@
+{
+  "name": "KFZ Oberberg – Automatischer Erinnerungsversand (täglich)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": { "interval": [ { "field": "cronExpression", "expression": "0 7 * * *" } ] }
+      },
+      "id": "trigger",
+      "name": "Täglich 07:00 Uhr",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [ 240, 400 ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select id, kunde_name, tel, kennzeichen, leistung, to_char(datum,'DD.MM.YYYY') as datum_de, zeit, (daten->>'email') as email\nfrom termin\nwhere betrieb_id = '{{ $env.BETRIEB_ID }}'\n  and deleted = false\n  and status in ('bestätigt','geplant')\n  and datum = (current_date + 1)\n  and coalesce((daten->>'erinnert')::boolean, false) = false;",
+        "options": {}
+      },
+      "id": "q_termine",
+      "name": "Termine morgen",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [ 520, 260 ],
+      "credentials": { "postgres": { "id": "SUPABASE_DB", "name": "Supabase Postgres" } }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select b.id, b.no, b.kunde_name, b.brutto, to_char((b.daten->>'faellig')::date,'DD.MM.YYYY') as faellig_de,\n       (b.daten->'kunde'->>'email') as email, (b.daten->'kunde'->>'tel') as tel\nfrom beleg b\nwhere b.betrieb_id = '{{ $env.BETRIEB_ID }}'\n  and b.belegart = 'rechnung' and b.deleted = false\n  and b.status <> 'bezahlt'\n  and (b.daten->>'faellig')::date = (current_date - 7);",
+        "options": {}
+      },
+      "id": "q_mahnung",
+      "name": "Überfällige Rechnungen (7 Tage)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [ 520, 540 ],
+      "credentials": { "postgres": { "id": "SUPABASE_DB", "name": "Supabase Postgres" } }
+    },
+    {
+      "parameters": {
+        "fromEmail": "werkstatt@kfz-oberberg.de",
+        "toEmail": "={{ $json.email }}",
+        "subject": "Ihr Termin morgen bei KFZ-Service Oberberg",
+        "emailFormat": "text",
+        "text": "Hallo {{ $json.kunde_name }},\n\nwir erinnern Sie an Ihren Termin morgen, {{ $json.datum_de }} um {{ $json.zeit }} Uhr.\nLeistung: {{ $json.leistung }}\nFahrzeug: {{ $json.kennzeichen }}\n\nBitte bringen Sie den Fahrzeugschein mit. Falls es nicht passt, rufen Sie uns kurz an.\n\nIhr Team von KFZ-Service Oberberg\nGummersbach",
+        "options": {}
+      },
+      "id": "mail_termin",
+      "name": "E-Mail Terminerinnerung",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [ 820, 180 ],
+      "credentials": { "smtp": { "id": "SMTP_WERKSTATT", "name": "SMTP Werkstatt" } }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/{{ $env.WHATSAPP_PHONE_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "Authorization", "value": "Bearer {{ $env.WHATSAPP_TOKEN }}" },
+          { "name": "Content-Type", "value": "application/json" }
+        ] },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $json.tel }}\",\n  \"type\": \"text\",\n  \"text\": { \"body\": \"Erinnerung: Ihr Termin morgen {{ $json.datum_de }} um {{ $json.zeit }} Uhr bei KFZ-Service Oberberg ({{ $json.leistung }}).\" }\n}",
+        "options": {}
+      },
+      "id": "wa_termin",
+      "name": "WhatsApp Terminerinnerung",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [ 820, 340 ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update termin set daten = jsonb_set(daten,'{erinnert}','true') where id = '{{ $json.id }}' and betrieb_id = '{{ $env.BETRIEB_ID }}';",
+        "options": {}
+      },
+      "id": "mark_termin",
+      "name": "Als erinnert markieren",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [ 1100, 260 ],
+      "credentials": { "postgres": { "id": "SUPABASE_DB", "name": "Supabase Postgres" } }
+    },
+    {
+      "parameters": {
+        "fromEmail": "werkstatt@kfz-oberberg.de",
+        "toEmail": "={{ $json.email }}",
+        "subject": "Zahlungserinnerung – Rechnung {{ $json.no }}",
+        "emailFormat": "text",
+        "text": "Hallo {{ $json.kunde_name }},\n\nunsere Rechnung {{ $json.no }} über {{ $json.brutto }} EUR war am {{ $json.faellig_de }} fällig und ist bei uns noch offen.\nBitte gleichen Sie den Betrag in den nächsten Tagen aus. Falls sich Ihre Zahlung überschnitten hat, betrachten Sie diese Nachricht als gegenstandslos.\n\nVielen Dank!\nKFZ-Service Oberberg",
+        "options": {}
+      },
+      "id": "mail_mahnung",
+      "name": "E-Mail Zahlungserinnerung",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [ 820, 540 ],
+      "credentials": { "smtp": { "id": "SMTP_WERKSTATT", "name": "SMTP Werkstatt" } }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select kunde_name, (daten->>'email') as email, (daten->>'tel') as tel, kennzeichen, to_char((daten->>'huFaellig')::date,'DD.MM.YYYY') as hu_de\nfrom kunde\nwhere betrieb_id = '{{ $env.BETRIEB_ID }}' and deleted = false\n  and (daten->>'huFaellig') <> ''\n  and (daten->>'huFaellig')::date between current_date and current_date + 30;",
+        "options": {}
+      },
+      "id": "q_hu",
+      "name": "HU/AU fällig (30 Tage)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [ 520, 760 ],
+      "credentials": { "postgres": { "id": "SUPABASE_DB", "name": "Supabase Postgres" } }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select kunde_name, (daten->>'email') as email, (daten->>'tel') as tel, kennzeichen,\n       to_char(((daten->>'oelLetzte')::date + ((coalesce(nullif(daten->>'oelInt',''),'12'))::int || ' months')::interval)::date,'DD.MM.YYYY') as faellig_de\nfrom kunde\nwhere betrieb_id = '{{ $env.BETRIEB_ID }}' and deleted = false\n  and (daten->>'oelLetzte') <> ''\n  and ((daten->>'oelLetzte')::date + ((coalesce(nullif(daten->>'oelInt',''),'12'))::int || ' months')::interval)::date\n      between current_date and current_date + 14;",
+        "options": {}
+      },
+      "id": "q_oel",
+      "name": "Ölwechsel fällig",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [ 520, 980 ],
+      "credentials": { "postgres": { "id": "SUPABASE_DB", "name": "Supabase Postgres" } }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select kunde_name, (daten->>'email') as email, (daten->>'tel') as tel\nfrom kunde\nwhere betrieb_id = '{{ $env.BETRIEB_ID }}' and deleted = false\n  and (daten->>'geburtstag') <> ''\n  and to_char((daten->>'geburtstag')::date,'MM-DD') = to_char(current_date,'MM-DD');",
+        "options": {}
+      },
+      "id": "q_geb",
+      "name": "Geburtstag heute",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [ 520, 1200 ],
+      "credentials": { "postgres": { "id": "SUPABASE_DB", "name": "Supabase Postgres" } }
+    },
+    {
+      "parameters": {
+        "fromEmail": "werkstatt@kfz-oberberg.de",
+        "toEmail": "={{ $json.email }}",
+        "subject": "HU/AU steht an – KFZ-Service Oberberg",
+        "emailFormat": "text",
+        "text": "Hallo {{ $json.kunde_name }},\n\nbei Ihrem Fahrzeug {{ $json.kennzeichen }} ist die Hauptuntersuchung (HU/AU) bis {{ $json.hu_de }} fällig.\nWir übernehmen die Vorführung gern für Sie – melden Sie sich für einen Termin, dann bleibt alles entspannt und ohne Bußgeld.\n\nIhr Team von KFZ-Service Oberberg\nGummersbach",
+        "options": {}
+      },
+      "id": "mail_hu",
+      "name": "E-Mail HU/AU-Erinnerung",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [ 820, 760 ],
+      "credentials": { "smtp": { "id": "SMTP_WERKSTATT", "name": "SMTP Werkstatt" } }
+    },
+    {
+      "parameters": {
+        "fromEmail": "werkstatt@kfz-oberberg.de",
+        "toEmail": "={{ $json.email }}",
+        "subject": "Zeit für den Ölwechsel – KFZ-Service Oberberg",
+        "emailFormat": "text",
+        "text": "Hallo {{ $json.kunde_name }},\n\nnach unserem letzten Service ist bei Ihrem Fahrzeug {{ $json.kennzeichen }} bald wieder ein Ölwechsel dran (rechnerisch um den {{ $json.faellig_de }}).\nEin frischer Ölwechsel hält den Motor gesund – wir finden schnell einen Termin für Sie.\n\nIhr Team von KFZ-Service Oberberg",
+        "options": {}
+      },
+      "id": "mail_oel",
+      "name": "E-Mail Ölwechsel-Erinnerung",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [ 820, 980 ],
+      "credentials": { "smtp": { "id": "SMTP_WERKSTATT", "name": "SMTP Werkstatt" } }
+    },
+    {
+      "parameters": {
+        "fromEmail": "werkstatt@kfz-oberberg.de",
+        "toEmail": "={{ $json.email }}",
+        "subject": "Alles Gute zum Geburtstag! – KFZ-Service Oberberg",
+        "emailFormat": "text",
+        "text": "Hallo {{ $json.kunde_name }},\n\nwir wünschen Ihnen alles Gute zum Geburtstag und ein rundum gutes, sicheres Jahr – natürlich auch auf der Straße.\n\nHerzliche Grüße\nIhr Team von KFZ-Service Oberberg",
+        "options": {}
+      },
+      "id": "mail_geb",
+      "name": "E-Mail Geburtstagsgruß",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [ 820, 1200 ],
+      "credentials": { "smtp": { "id": "SMTP_WERKSTATT", "name": "SMTP Werkstatt" } }
+    }
+  ],
+  "connections": {
+    "Täglich 07:00 Uhr": { "main": [ [
+      { "node": "Termine morgen", "type": "main", "index": 0 },
+      { "node": "Überfällige Rechnungen (7 Tage)", "type": "main", "index": 0 },
+      { "node": "HU/AU fällig (30 Tage)", "type": "main", "index": 0 },
+      { "node": "Ölwechsel fällig", "type": "main", "index": 0 },
+      { "node": "Geburtstag heute", "type": "main", "index": 0 }
+    ] ] },
+    "HU/AU fällig (30 Tage)": { "main": [ [ { "node": "E-Mail HU/AU-Erinnerung", "type": "main", "index": 0 } ] ] },
+    "Ölwechsel fällig": { "main": [ [ { "node": "E-Mail Ölwechsel-Erinnerung", "type": "main", "index": 0 } ] ] },
+    "Geburtstag heute": { "main": [ [ { "node": "E-Mail Geburtstagsgruß", "type": "main", "index": 0 } ] ] },
+    "Termine morgen": { "main": [ [
+      { "node": "E-Mail Terminerinnerung", "type": "main", "index": 0 },
+      { "node": "WhatsApp Terminerinnerung", "type": "main", "index": 0 }
+    ] ] },
+    "E-Mail Terminerinnerung": { "main": [ [ { "node": "Als erinnert markieren", "type": "main", "index": 0 } ] ] },
+    "Überfällige Rechnungen (7 Tage)": { "main": [ [ { "node": "E-Mail Zahlungserinnerung", "type": "main", "index": 0 } ] ] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "meta": { "description": "Liest täglich Fälligkeiten aus Supabase und versendet E-Mail/WhatsApp: Termine morgen, überfällige Rechnungen (7 Tage), HU/AU (30 Tage), Ölwechsel (fällig in 14 Tagen), Geburtstag heute. Umgebungsvariablen: BETRIEB_ID, WHATSAPP_PHONE_ID, WHATSAPP_TOKEN. Credentials: 'Supabase Postgres' + 'SMTP Werkstatt'. Felder liegen in kunde.daten (huFaellig, oelLetzte/oelInt, geburtstag)." }
+}

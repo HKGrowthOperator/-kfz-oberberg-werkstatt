@@ -1,0 +1,1016 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="manifest" href='data:application/json,{"name":"KFZ-Service Oberberg","short_name":"Werkstatt","display":"standalone","background_color":"%23ECE9E2","theme_color":"%23157A4E","start_url":"."}'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Werkstatt">
+<meta name="theme-color" content="#157A4E">
+<title>Werkstatt-System · KFZ-Service Oberberg</title>
+<style>
+  :root{
+    --ink:#16150F; --paper:#fff; --bg:#ECE9E2; --tint:#F7F5F0;
+    --text:#2B2A24; --soft:#5C594F; --faint:#8E8B80; --line:#E1DDD3;
+    --green:#1FA368; --green-deep:#157A4E; --green-wash:#E6F1EA; --red:#B3341F; --amber:#B8860B; --amber-wash:#fdf1e3;
+    --sans:'Hanken Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    --disp:'Bricolage Grotesque',var(--sans);
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  button{font-family:inherit;cursor:pointer}
+  input,select,textarea{font-family:inherit;font-size:14px}
+  .app{display:grid;grid-template-columns:248px 1fr;min-height:100vh}
+  @media(max-width:900px){.app{grid-template-columns:1fr}.side{display:none}}
+  .side{background:var(--paper);border-right:1px solid var(--line);padding:14px 12px;display:flex;flex-direction:column;gap:3px;height:100vh;position:sticky;top:0;overflow:auto}
+  .logo{display:flex;align-items:center;gap:10px;padding:6px 8px 12px;border-bottom:1px solid var(--line);margin-bottom:6px}
+  .logo .sq{width:38px;height:38px;border-radius:11px;background:var(--green-deep);color:#fff;display:grid;place-items:center;font-family:var(--disp);font-weight:800;font-size:19px}
+  .logo b{font-family:var(--disp);font-weight:800;color:var(--ink);font-size:14.5px;display:block;line-height:1.1}
+  .logo small{color:var(--faint);font-size:11px}
+  .grp{font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);font-weight:700;padding:12px 10px 4px}
+  .nav{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;color:var(--text);font-weight:600;font-size:13px;cursor:pointer}
+  .nav:hover{background:var(--tint)}
+  .nav.on{background:var(--green-wash);color:var(--green-deep)}
+  .nav svg{width:18px;height:18px;flex:none;stroke:currentColor;stroke-width:1.7;fill:none}
+  .nav span{flex:1}
+  .nav .cnt{flex:none;font-size:11px;font-weight:700;color:var(--faint);background:var(--tint);padding:1px 7px;border-radius:999px}
+  .nav.on .cnt{background:#fff;color:var(--green-deep)}
+  .nav .bdg{flex:none;font-size:10px;font-weight:800;color:#fff;background:var(--red);padding:1px 7px;border-radius:999px}
+  .goal{margin-top:auto;background:var(--tint);border:1px solid var(--line);border-radius:12px;padding:13px}
+  .goal .r{display:flex;justify-content:space-between;font-size:12px}.goal b{font-weight:700;color:var(--ink)}
+  .goal .bar{height:7px;background:#E3E1D8;border-radius:5px;overflow:hidden;margin:8px 0 6px}
+  .goal .bar>span{display:block;height:100%;background:var(--green-deep);border-radius:5px}
+  .goal .sub2{font-size:11px;color:var(--faint)}.goal .sub2 a{color:var(--green-deep);font-weight:700;cursor:pointer}
+  .mainCol{background:var(--bg);min-width:0;display:flex;flex-direction:column}
+  .top{display:flex;align-items:center;gap:12px;padding:12px 22px;background:var(--paper);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:6}
+  .search{flex:1;max-width:480px;display:flex;align-items:center;gap:8px;background:var(--tint);border:1px solid var(--line);border-radius:10px;padding:0 12px}
+  .search svg{width:16px;height:16px;stroke:var(--faint);stroke-width:1.8;fill:none;flex:none}
+  .search input{flex:1;border:none;background:transparent;padding:9px 0;color:var(--text);outline:none}
+  .search .kbd{font-size:11px;background:#fff;border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--faint)}
+  .btn{display:inline-flex;align-items:center;gap:7px}
+  .btn .i16{width:15px;height:15px;stroke:currentColor;stroke-width:1.9;fill:none}
+  .ic{width:37px;height:37px;border-radius:9px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;position:relative;cursor:pointer;flex:none}
+  .ic svg{width:17px;height:17px;stroke:var(--text);stroke-width:1.8;fill:none}
+  .dot{position:absolute;top:-6px;right:-6px;background:var(--red);color:#fff;font-size:10px;font-weight:800;min-width:17px;height:17px;padding:0 4px;border-radius:999px;display:grid;place-items:center;border:2px solid #fff}
+  .user{display:flex;align-items:center;gap:9px;cursor:pointer}
+  .user .ava{width:35px;height:35px;border-radius:999px;background:var(--green-deep);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px}
+  .user b{display:block;font-size:13px;color:var(--ink);line-height:1.1}.user small{font-size:11px;color:var(--faint)}
+  #main{padding:22px 24px 40px}
+  .crumb{font-size:12px;color:var(--faint);margin-bottom:5px}.crumb b{color:var(--text)}
+  .head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+  h1{font-family:var(--disp);font-style:italic;font-weight:800;font-size:31px;color:var(--ink);letter-spacing:-.02em}
+  .hsub{color:var(--faint);font-size:13.5px;margin-top:3px}.hsub b{color:var(--green-deep);font-weight:700}
+  .hact{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+  .seg{display:inline-flex;background:var(--paper);border:1px solid var(--line);border-radius:9px;padding:3px}
+  .seg span{padding:6px 11px;font-size:12px;font-weight:700;color:var(--faint);border-radius:6px;cursor:pointer}.seg span.on{background:var(--tint);color:var(--ink)}
+  .mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px}
+  @media(max-width:1100px){.mgrid{grid-template-columns:repeat(2,1fr)}}@media(max-width:560px){.mgrid{grid-template-columns:1fr}}
+  .mcard{padding:20px 20px 0;overflow:hidden;cursor:pointer;transition:box-shadow .15s,transform .15s}.mcard:hover{box-shadow:0 2px 4px rgba(22,21,15,.05),0 18px 40px -22px rgba(22,21,15,.3);transform:translateY(-1px)}
+  .mt{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+  .mtile{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;flex:none}.mtile svg{width:19px;height:19px;stroke-width:1.8;fill:none}
+  .mlab{font-weight:700;color:var(--ink);font-size:14px}
+  .mval{display:flex;align-items:baseline;gap:10px}.mval .num{font-family:var(--disp);font-style:italic;font-weight:800;font-size:31px;color:var(--ink);letter-spacing:-.02em}
+  .chg{font-size:13px;font-weight:800;display:inline-flex;gap:3px}.chg.up{color:var(--green)}.chg.down{color:var(--red)}
+  .spark{margin:14px -20px 0;height:66px;display:block;width:calc(100% + 40px)}
+  .drow{display:grid;grid-template-columns:1.55fr 1fr;gap:16px;margin-bottom:16px}
+  .drow2{display:grid;grid-template-columns:1fr 1.3fr;gap:16px}
+  @media(max-width:980px){.drow,.drow2{grid-template-columns:1fr}}
+  .ch{padding:18px}
+  .chh{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  .chh .ti{width:31px;height:31px;border-radius:9px;background:var(--green-wash);display:grid;place-items:center}.chh .ti svg{width:16px;height:16px;stroke:var(--green-deep);stroke-width:1.8;fill:none}
+  .chh b{font-family:var(--disp);font-weight:700;color:var(--ink);font-size:16.5px}
+  .chh .leg{margin-left:auto;display:flex;gap:12px;font-size:11.5px;color:var(--faint);font-weight:600}
+  .chh .leg i{width:12px;height:2px;display:inline-block;border-radius:2px;margin-right:4px;vertical-align:middle}
+  .donut{display:flex;align-items:center;gap:16px;margin-top:6px;flex-wrap:wrap}
+  .donut .dleg{flex:1;min-width:140px;display:grid;gap:9px}
+  .donut .dleg .r{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text)}.donut .dleg .r b{margin-left:auto;color:var(--ink);font-weight:700}.donut .dleg .r i{width:9px;height:9px;border-radius:3px;flex:none}
+  .meta{border-top:1px solid var(--line);margin-top:14px;padding-top:11px;display:grid;gap:7px}.meta .r{display:flex;justify-content:space-between;font-size:12.5px}.meta .r span{color:var(--faint)}.meta .r b{color:var(--ink)}
+  .rep{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--line)}.rep:last-child{border-bottom:none}
+  .rep .ti2{width:32px;height:32px;border-radius:9px;background:var(--tint);display:grid;place-items:center;font-size:15px;flex:none}
+  .rep b{color:var(--ink);font-size:13px;display:block}.rep small{color:var(--faint);font-size:11.5px}
+  .rep .repact{margin-left:auto;display:flex;gap:6px}
+  .srcrow{margin-bottom:13px}.srcrow .rr{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px}.srcrow .rr span{color:var(--text)}.srcrow .rr b{color:var(--ink);font-weight:700}
+  .track{height:8px;background:var(--tint);border-radius:5px;overflow:hidden}.track>span{display:block;height:100%;background:var(--green-deep);border-radius:5px}
+  h2{font-family:var(--disp);font-weight:800;font-size:20px;letter-spacing:-.02em;color:var(--ink);margin-bottom:4px}
+  .muted{color:var(--faint);font-size:12.5px}
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 1px 2px rgba(22,21,15,.03),0 12px 30px -20px rgba(22,21,15,.22)}
+  .grid{display:grid;gap:12px}
+  @media(min-width:640px){.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}.g4{grid-template-columns:1fr 1fr 1fr 1fr}}
+  label.f{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);margin-bottom:5px}
+  input.i,select.i,textarea.i{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--text)}
+  input.i:focus,select.i:focus,textarea.i:focus{outline:2px solid var(--green);border-color:var(--green)}
+  .btn{border:none;background:var(--green);color:#fff;font-weight:700;padding:10px 16px;border-radius:9px;font-size:14px}
+  .btn:hover{background:var(--green-deep)}
+  .btn.sec{background:var(--tint);color:var(--ink);border:1px solid var(--line)}
+  .btn.ghost{background:transparent;color:var(--green-deep);padding:6px 10px}
+  .btn.sm{padding:6px 11px;font-size:12.5px;border-radius:7px}
+  table{width:100%;border-collapse:collapse}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);font-size:13.5px}
+  th{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);font-weight:700;background:var(--tint)}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .pill{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px}
+  .pill.offen{background:var(--amber-wash);color:var(--amber)}
+  .pill.bezahlt,.pill.angenommen{background:var(--green-wash);color:var(--green-deep)}
+  .pill.abgelehnt{background:#f7e3df;color:var(--red)}
+  .pill.kva{background:#e7eef7;color:#2c5b8f}
+  .pill.au{background:#f3ead9;color:#8a6d1f}
+  .pill.erledigt{background:var(--green-wash);color:var(--green-deep)}
+  .pill.re{background:var(--green-wash);color:var(--green-deep)}
+  .toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+  .empty{text-align:center;color:var(--faint);padding:36px;border:1px dashed var(--line);border-radius:12px}
+  .totbox{margin-left:auto;width:min(320px,100%);display:grid;gap:6px;margin-top:12px}
+  .totbox .tr{display:flex;justify-content:space-between;font-size:14px}
+  .totbox .tr.big{font-family:var(--disp);font-weight:800;font-size:19px;color:var(--ink);border-top:2px solid var(--green);padding-top:8px;margin-top:4px}
+  .flex-between{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .chip{font-size:12px;padding:5px 10px;border:1px solid var(--line);border-radius:999px;background:var(--tint);cursor:pointer}
+  .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .posrow{display:grid;grid-template-columns:1fr 70px 100px 70px 90px 32px;gap:8px;align-items:center;margin-bottom:8px}
+  .poshead{grid-template-columns:1fr 70px 100px 70px 90px 32px;display:grid;gap:8px;font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--faint);font-weight:700;margin-bottom:6px}
+  @media(max-width:620px){.posrow,.poshead{grid-template-columns:1fr 60px 84px 84px}.posrow .del{grid-column:1/-1;justify-self:end}.poshead{display:none}}
+  .x{border:none;background:transparent;color:var(--red);font-size:18px;line-height:1}
+  .hint{background:var(--green-wash);border:1px solid #cfe6d8;border-left:3px solid var(--green);border-radius:8px;padding:10px 14px;font-size:12.5px;color:var(--ink);margin-bottom:14px}
+  .warn{background:var(--amber-wash);border:1px solid #f0dcc0;border-left:3px solid var(--amber);border-radius:8px;padding:10px 14px;font-size:12.5px;color:#6b5300;margin-bottom:14px}
+  /* reminders */
+  .rem{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:14px 16px;border:1px solid var(--line);border-radius:10px;margin-bottom:10px;background:var(--paper)}
+  .rem .ic{width:42px;height:42px;border-radius:10px;display:grid;place-items:center;font-size:20px}
+  .rem.over{border-left:4px solid var(--red)} .rem.soon{border-left:4px solid var(--amber)} .rem.bday{border-left:4px solid var(--green)}
+  .rem .t{font-weight:700;color:var(--ink)} .rem .s{font-size:12.5px;color:var(--faint)}
+  .rem .act{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+  .kpi{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin-bottom:18px}
+  .kpi .c{background:var(--tint);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .kpi .n{font-family:var(--disp);font-weight:800;font-size:24px;color:var(--ink)} .kpi .l{font-size:12px;color:var(--faint)}
+  /* print */
+  #printArea{display:none}
+  .inv{max-width:800px;margin:0 auto;background:#fff;color:#111;padding:40px;font-size:13px}
+  .inv .top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:30px}
+  .inv .logo{font-family:var(--disp);font-weight:800;font-size:20px}
+  .inv .absender{font-size:10px;color:#666;margin-bottom:4px;text-decoration:underline}
+  .inv h1{font-family:var(--disp);font-size:24px;margin:24px 0 4px}
+  .inv .meta{display:flex;gap:30px;flex-wrap:wrap;color:#444;font-size:12px;margin-bottom:22px}
+  .inv table{width:100%;border-collapse:collapse;margin:10px 0}
+  .inv th{background:#f2f2f2;color:#333;font-size:10px}
+  .inv th,.inv td{border-bottom:1px solid #ddd;padding:8px 10px}
+  .inv .foot{margin-top:30px;font-size:11px;color:#555;display:flex;gap:30px;flex-wrap:wrap;border-top:1px solid #ddd;padding-top:14px}
+  .inv .foot div{min-width:150px}
+  @media print{body{background:#fff}.app{display:none!important}#printArea{display:block!important}.inv{padding:0;max-width:none}}
+</style>
+
+<div class="app">
+  <aside class="side">
+    <div class="logo"><div class="sq">K</div><div><b id="hFirma">KFZ-Service</b><small>Oberberg · Werkstatt</small></div></div>
+    <div id="nav"></div>
+    <div class="goal" id="goal"></div>
+  </aside>
+  <div class="mainCol">
+    <div class="top">
+      <div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg><input id="q" placeholder="Kunden, Rechnungen, Fahrzeuge suchen…" oninput="doSearch(this.value)"><span class="kbd">⌘K</span></div>
+      <button class="btn sec" onclick="exportData()"><svg class="i16" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Export</button>
+      <button class="btn" onclick="newDoc()"><svg class="i16" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Neue Rechnung</button>
+      <div class="ic" title="Dashboard" onclick="go('dashboard')"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
+      <div class="ic" title="Erinnerungen" onclick="go('erinnerungen')"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 10-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M10 21a2 2 0 004 0"/></svg><span class="dot" id="bellDot" style="display:none">0</span></div>
+      <div class="user" onclick="go('einstellungen')"><div class="ava" id="ava">AC</div><div><b id="uName">Ahmet Celik</b><small>Inhaber</small></div></div>
+    </div>
+    <div id="main"></div>
+  </div>
+</div>
+<div id="printArea"></div>
+
+<script>
+const K={set:'kfz_settings',cust:'kfz_customers',item:'kfz_items',inv:'kfz_invoices'};
+const load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}};
+const save=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const uid=()=>Math.random().toString(36).slice(2,9);
+const eur=n=>(n||0).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
+const esc=s=>(s??'').toString().replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const todayISO=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const deDate=iso=>{if(!iso)return'';const[y,m,d]=iso.split('-');return d+'.'+m+'.'+y};
+const addMonths=(iso,m)=>{if(!iso)return'';const d=new Date(iso);d.setMonth(d.getMonth()+ (+m||0));return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const daysUntil=iso=>{if(!iso)return null;const a=new Date(todayISO()),b=new Date(iso);return Math.round((b-a)/86400000)};
+
+const DEF_TPL={
+ hu:{betreff:'Erinnerung: HU/AU steht an – {fahrzeug} {kennzeichen}',text:'Hallo {name},\n\nbei Ihrem Fahrzeug {fahrzeug} ({kennzeichen}) steht die HU/AU zum {datum} an. Wir übernehmen das gerne für Sie – melden Sie sich einfach für einen Termin.\n\nViele Grüße\n{firma}'},
+ oel:{betreff:'Zeit für den nächsten Ölwechsel – {fahrzeug}',text:'Hallo {name},\n\nfür Ihr Fahrzeug {fahrzeug} ({kennzeichen}) empfehlen wir den nächsten Ölwechsel (fällig bis {datum}). Vereinbaren Sie gerne einen Termin bei uns.\n\nViele Grüße\n{firma}'},
+ inspektion:{betreff:'Inspektion fällig – {fahrzeug}',text:'Hallo {name},\n\ndie nächste Inspektion für Ihr Fahrzeug {fahrzeug} ({kennzeichen}) ist fällig (bis {datum}). Wir kümmern uns gerne darum.\n\nViele Grüße\n{firma}'},
+ geburtstag:{betreff:'Alles Gute zum Geburtstag, {name}!',text:'Hallo {name},\n\nwir wünschen Ihnen alles Gute zum Geburtstag und ein rundum gutes Jahr!\n\nHerzliche Grüße\nIhr Team von {firma}'},
+ mahnung:{betreff:'Zahlungserinnerung zu Rechnung {nr}',text:'Hallo {name},\n\nunsere Rechnung {nr} über {betrag} ist noch offen. Bitte gleichen Sie den Betrag in den nächsten Tagen aus. Sollte sich das überschnitten haben, betrachten Sie diese Nachricht als gegenstandslos.\n\nViele Grüße\n{firma}'},
+ bewertung:{betreff:'Waren Sie zufrieden? – {firma}',text:'Hallo {name},\n\nvielen Dank für Ihren Besuch bei {firma}! Wenn Sie zufrieden waren, freuen wir uns sehr über eine kurze Google-Bewertung:\n{link}\n\nDas dauert nur eine Minute und hilft uns enorm.\n\nViele Grüße\n{firma}'},
+ terminbestaetigung:{betreff:'Terminbestätigung: {datum}',text:'Hallo {name},\n\nwir bestätigen Ihren Termin am {datum}{uhrzeit} für {fahrzeug} ({kennzeichen}).\nLeistung: {leistung}\n\nBis dahin!\n{firma}'},
+ terminerinnerung:{betreff:'Terminerinnerung: {datum}',text:'Hallo {name},\n\nkleine Erinnerung an Ihren Termin am {datum}{uhrzeit} bei {firma} für {fahrzeug} ({kennzeichen}).\n\nBis bald!\n{firma}'}
+};
+
+let settings=load(K.set,null);
+if(!settings){settings={firma:'KFZ-Service Oberberg',inhaber:'Ahmet Sultan Celik',strasse:'',plz:'',ort:'Gummersbach',tel:'',email:'',steuernr:'',ustid:'',iban:'',bic:'',bank:'',kleinunternehmer:false,prefix:'RE-',nextNo:1,kvaPrefix:'KVA-',nextKva:1,ziel:14,remLead:30,fuss:'Vielen Dank für Ihren Auftrag!',jahresziel:50000,tpl:JSON.parse(JSON.stringify(DEF_TPL))};save(K.set,settings);}
+if(settings.jahresziel==null)settings.jahresziel=50000;
+if(!settings.tpl){settings.tpl=JSON.parse(JSON.stringify(DEF_TPL));}
+if(!settings.tpl.mahnung){settings.tpl.mahnung=JSON.parse(JSON.stringify(DEF_TPL.mahnung));}
+if(settings.remLead==null)settings.remLead=30;
+if(!settings.kvaPrefix){settings.kvaPrefix='KVA-';settings.nextKva=1;}
+if(!settings.auftragPrefix){settings.auftragPrefix='AU-';settings.nextAuftrag=1;}
+if(settings.googleReview==null)settings.googleReview='';
+if(settings.teileConnectorUrl==null)settings.teileConnectorUrl='';
+if(settings.syncUrl==null)settings.syncUrl='';
+if(settings.syncKey==null)settings.syncKey='';
+['bewertung','terminbestaetigung','terminerinnerung'].forEach(k=>{if(!settings.tpl[k])settings.tpl[k]=JSON.parse(JSON.stringify(DEF_TPL[k]));});
+
+let customers=load(K.cust,[]);
+let items=load(K.item,null);
+if(!items){items=[
+  {id:uid(),name:'Arbeitsstunde Werkstatt',preis:75,mwst:19},
+  {id:uid(),name:'HU/AU inkl. Vorführung',preis:120,mwst:19},
+  {id:uid(),name:'Ölwechsel inkl. Material',preis:89,mwst:19},
+  {id:uid(),name:'Reifenwechsel (4 Räder)',preis:49,mwst:19},
+  {id:uid(),name:'Inspektion klein',preis:149,mwst:19},
+  {id:uid(),name:'Inspektion groß',preis:299,mwst:19},
+  {id:uid(),name:'Bremsen vorne (Beläge+Scheiben)',preis:249,mwst:19},
+  {id:uid(),name:'Klimaservice',preis:99,mwst:19},
+  {id:uid(),name:'Fahrzeugaufbereitung innen/außen',preis:129,mwst:19},
+  {id:uid(),name:'Fehlerdiagnose / Auslesen',preis:45,mwst:19},
+];save(K.item,items);}
+let invoices=load(K.inv,[]);
+let expenses=load('kfz_expenses',[]);
+let appointments=load('kfz_appointments',[]);
+let parts=load('kfz_parts',[]);
+const KAT=['Ersatzteile / Wareneinkauf','Werkzeug / Geräte','Miete / Werkstatt','Kfz-Kosten / Fuhrpark','Versicherungen','Telefon / Internet','Werbung / Marketing','Bürobedarf','Fortbildung','Steuerberater','Sonstiges'];
+let finYear=new Date().getFullYear();
+
+let view='dashboard',draft=null,docFilter='alle';
+const main=document.getElementById('main');
+document.getElementById('hFirma').textContent=settings.firma||'Werkstatt-System';
+
+/* ---------- REMINDER ENGINE ---------- */
+function computeReminders(){
+  const out=[];const lead=+settings.remLead||30;
+  customers.forEach(c=>{
+    const veh=(c.fahrzeug||'')+(c.kennzeichen?' ':'');
+    const ctx={name:c.name,fahrzeug:c.fahrzeug||'',kennzeichen:c.kennzeichen||'',firma:settings.firma};
+    if(c.huFaellig){const d=daysUntil(c.huFaellig);if(d!==null&&d<=lead)out.push({type:'hu',c,datum:c.huFaellig,days:d,titel:'HU/AU fällig',ctx});}
+    if(c.oelLetzte){const due=addMonths(c.oelLetzte,c.oelInt||12);const d=daysUntil(due);if(d!==null&&d<=lead)out.push({type:'oel',c,datum:due,days:d,titel:'Ölwechsel fällig',ctx});}
+    if(c.inspLetzte){const due=addMonths(c.inspLetzte,c.inspInt||24);const d=daysUntil(due);if(d!==null&&d<=lead)out.push({type:'inspektion',c,datum:due,days:d,titel:'Inspektion fällig',ctx});}
+    if(c.geburtstag){const g=c.geburtstag.split('-');const t=new Date();let nb=new Date(t.getFullYear(),+g[1]-1,+g[2]);if((nb-new Date(todayISO()))<0)nb=new Date(t.getFullYear()+1,+g[1]-1,+g[2]);const dd=Math.round((nb-new Date(todayISO()))/86400000);if(dd<=Math.min(lead,21))out.push({type:'geburtstag',c,datum:nb.getFullYear()+'-'+String(nb.getMonth()+1).padStart(2,'0')+'-'+String(nb.getDate()).padStart(2,'0'),days:dd,titel:'Geburtstag',ctx});}
+  });
+  return out.sort((a,b)=>a.days-b.days);
+}
+function fillTpl(str,ctx,datum){return str.replace(/\{(\w+)\}/g,(m,k)=>k==='datum'?deDate(datum):(ctx[k]??''));}
+function mailLink(to,tpl,ctx,datum){const b=fillTpl(tpl.text,ctx,datum);const s=fillTpl(tpl.betreff,ctx,datum);return'mailto:'+encodeURIComponent(to||'')+'?subject='+encodeURIComponent(s)+'&body='+encodeURIComponent(b);}
+function waLink(tel,tpl,ctx,datum){let p=(tel||'').replace(/[^0-9]/g,'');if(p.startsWith('0'))p='49'+p.slice(1);const t=fillTpl(tpl.text,ctx,datum);return'https://wa.me/'+p+'?text='+encodeURIComponent(t);}
+
+/* ---------- NAV ---------- */
+const eur0=n=>Math.round(n||0).toLocaleString('de-DE')+' €';
+const ICON={
+ dash:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+ user:'<circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0114 0"/>',
+ doc:'<path d="M6 3h9l3 3v15H6z"/><path d="M9 8h6M9 12h6M9 16h4"/>',
+ quote:'<path d="M4 5h16v14H4z"/><path d="M4 9h16"/>',
+ tag:'<path d="M3 12l9-9 9 9-9 9z"/><circle cx="9" cy="9" r="1.3"/>',
+ euro:'<path d="M12 3v18M7 7h7a3 3 0 010 6H7m0 0h8"/>',
+ bell:'<path d="M18 8a6 6 0 10-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M10 21a2 2 0 004 0"/>',
+ kalender:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/>',
+ wrench:'<path d="M15 7a4 4 0 01-5.2 3.8L5 15.6 8.4 19l4.8-4.8A4 4 0 0018 9l-2 2-2-2 2-2a4 4 0 00-1 0z"/>',
+ box:'<path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/>',
+ gear:'<circle cx="12" cy="12" r="3"/><path d="M4 12a8 8 0 00.2 1.8l-1.9 1.5 2 3.4 2.3-1a8 8 0 001.6 1L11 22h2l.8-2.3a8 8 0 001.6-1l2.3 1 2-3.4-1.9-1.5A8 8 0 0020 12a8 8 0 00-.2-1.8l1.9-1.5-2-3.4-2.3 1a8 8 0 00-1.6-1L13 3h-2l-.8 2.3a8 8 0 00-1.6 1l-2.3-1-2 3.4 1.9 1.5A8 8 0 004 12z"/>'
+};
+function iconSvg(p){return `<svg viewBox="0 0 24 24">${p}</svg>`;}
+function remCount(){return computeReminders().filter(r=>r.days<=(+settings.remLead||30)).length;}
+function newDoc(){draft=newDraft();go('neu');}
+function navTo(v,f){if(f)docFilter=f;view=v;if(v==='neu'&&!draft)draft=newDraft();renderNav();render();}
+function renderNav(){
+  const rc=remCount();
+  const groups=[
+   ['Übersicht',[['dashboard','Dashboard',ICON.dash]]],
+   ['Werkstatt',[
+     ['kunden','Kunden & Fahrzeuge',ICON.user,null,customers.length],
+     ['dokumente','Rechnungen',ICON.doc,'rechnung',invoices.filter(i=>i.belegart==='rechnung').length],
+     ['dokumente','Aufträge',ICON.wrench,'auftrag',invoices.filter(i=>i.belegart==='auftrag').length],
+     ['dokumente','Kostenvoranschläge',ICON.quote,'kva',invoices.filter(i=>i.belegart==='kva').length],
+     ['termine','Termine',ICON.kalender,null,null,apptToday()],
+     ['leistungen','Leistungen',ICON.tag,null,null],
+     ['teile','Teile / Lager',ICON.box,null,null,lowStockParts().length]
+   ]],
+   ['Finanzen',[['finanzen','Kosten & EÜR',ICON.euro,null,null]]],
+   ['Betrieb',[['erinnerungen','Erinnerungen',ICON.bell,null,null,rc],['einstellungen','Einstellungen',ICON.gear,null,null]]]
+  ];
+  document.getElementById('nav').innerHTML=groups.map(([g,items])=>`<div class="grp">${g}</div>`+items.map(([v,l,ic,f,cnt,badge])=>{
+    const active=view===v&&(v!=='dokumente'||(f?(docFilter===f||(f==='rechnung'&&docFilter==='alle')):true));
+    const right=badge?`<span class="bdg">${badge}</span>`:(cnt!=null?`<span class="cnt">${cnt}</span>`:'');
+    return `<div class="nav ${active?'on':''}" onclick="navTo('${v}',${f?`'${f}'`:'null'})">${iconSvg(ic)}<span>${l}</span>${right}</div>`;
+  }).join('')).join('');
+  const yr=new Date().getFullYear();
+  const um=invoices.filter(i=>i.belegart==='rechnung'&&i.status==='bezahlt'&&new Date(i.bezahltAm||i.datum).getFullYear()===yr).reduce((s,i)=>s+i.brutto,0);
+  const ziel=settings.jahresziel||50000;const pc=Math.min(100,Math.round(um/ziel*100));
+  document.getElementById('goal').innerHTML=`<div class="r"><b>Jahresziel Umsatz</b><span>${eur0(um)}</span></div><div class="bar"><span style="width:${pc}%"></span></div><div class="sub2">${pc}% von ${eur0(ziel)} · <a onclick="go('finanzen')">Details</a></div>`;
+  const bd=document.getElementById('bellDot');if(bd){bd.style.display=rc?'grid':'none';bd.textContent=rc>9?'9+':rc;}
+  document.getElementById('hFirma').textContent=(settings.firma||'Werkstatt').split(' ')[0];
+  document.getElementById('uName').textContent=settings.inhaber||'Inhaber';
+  document.getElementById('ava').textContent=((settings.inhaber||'AC').split(' ').map(w=>w[0]).slice(0,2).join('')||'AC').toUpperCase();
+}
+function go(v){view=v;if(v==='neu'&&!draft)draft=newDraft();renderNav();render();}
+function render(){({dashboard:renderDashboard,suche:renderSearch,termine:renderTermine,teile:renderParts,erinnerungen:renderReminders,neu:renderEditor,dokumente:renderDocs,finanzen:renderFinanzen,kunden:renderCustomers,leistungen:renderItems,einstellungen:renderSettings}[view]||renderDashboard)();}
+
+/* ---------- DASHBOARD ---------- */
+let dashMode='monat';
+function pad2(n){return('0'+n).slice(-2);}
+function isoOf(d){return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate());}
+function isoWeek(d){d=new Date(d);d.setHours(0,0,0,0);d.setDate(d.getDate()+3-((d.getDay()+6)%7));const wk1=new Date(d.getFullYear(),0,4);return{y:d.getFullYear(),w:1+Math.round(((d-wk1)/86400000-3+((wk1.getDay()+6)%7))/7)};}
+function faelligDate(i){const d=new Date(i.datum);d.setDate(d.getDate()+(i.ziel||14));return isoOf(d);}
+function custEmail(n){const c=customers.find(x=>x.name.toLowerCase()===(n||'').toLowerCase());return c?c.email:'';}
+function custTel(n){const c=customers.find(x=>x.name.toLowerCase()===(n||'').toLowerCase());return c?c.tel:'';}
+function periodBuckets(mode){const now=new Date(todayISO());const bs=[];
+ if(mode==='tag'){for(let i=13;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);const key=isoOf(d);bs.push({label:pad2(d.getDate())+'.'+pad2(d.getMonth()+1),test:x=>x===key});}}
+ else if(mode==='woche'){for(let i=7;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i*7);const w=isoWeek(d);bs.push({label:'KW'+w.w,test:x=>{const q=isoWeek(new Date(x));return q.y===w.y&&q.w===w.w;}});}}
+ else{const M=['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];for(let i=11;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);const key=d.getFullYear()+'-'+pad2(d.getMonth()+1);bs.push({label:M[d.getMonth()]+' '+String(d.getFullYear()).slice(2),test:x=>String(x).slice(0,7)===key});}}
+ return bs;}
+function niceCeil(x){if(x<=0)return 1;const p=Math.pow(10,Math.floor(Math.log10(x)));const f=x/p;const nn=f<=1?1:f<=2?2:f<=5?5:10;return nn*p;}
+function drawBarChart(cv,buckets,inc,exp){const dpr=window.devicePixelRatio||1;const W=cv.clientWidth||600,H=cv.clientHeight||240;cv.width=W*dpr;cv.height=H*dpr;const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,W,H);const padL=48,padB=28,padT=10,padR=10;const pW=W-padL-padR,pH=H-padT-padB;const mx=niceCeil(Math.max(1,...inc,...exp));c.font='10px sans-serif';c.textBaseline='middle';for(let i=0;i<=4;i++){const y=padT+pH-pH*i/4;c.strokeStyle='#ECEAE3';c.beginPath();c.moveTo(padL,y);c.lineTo(W-padR,y);c.stroke();c.fillStyle='#8E8B80';c.textAlign='right';c.fillText(Math.round(mx*i/4).toLocaleString('de-DE'),padL-6,y);}const n=buckets.length;const gW=pW/n;const bW=Math.max(5,Math.min(16,gW/3));buckets.forEach((b,i)=>{const gx=padL+gW*i+gW/2;const ih=pH*(inc[i]/mx),eh=pH*(exp[i]/mx);c.fillStyle='#1FA368';c.fillRect(gx-bW-1,padT+pH-ih,bW,ih);c.fillStyle='#C74B32';c.fillRect(gx+1,padT+pH-eh,bW,eh);c.fillStyle='#8E8B80';c.textAlign='center';c.textBaseline='top';c.fillText(b.label,gx,padT+pH+8);});}
+function bar(label,val,max,color){const pct=max?val/max*100:0;return `<div style="margin-bottom:9px"><div class="flex-between" style="font-size:12.5px"><span>${esc(label)}</span><b>${eur(val)}</b></div><div style="height:7px;background:var(--tint);border-radius:4px;overflow:hidden;margin-top:3px"><div style="height:100%;width:${pct}%;background:${color}"></div></div></div>`;}
+function chgChip(cur,prev){if(prev==null||prev<=0)return '';const p=(cur-prev)/prev*100;const up=p>=0;return `<span class="chg ${up?'up':'down'}">${up?'▲':'▼'} ${Math.abs(p).toFixed(1).replace('.',',')}%</span>`;}
+function svgSpark(data,color,i){const w=100,h=34,p=3;const mn=Math.min(...data,0),mx=Math.max(...data,1),rng=(mx-mn)||1;const X=k=>p+k*(w-2*p)/(Math.max(1,data.length-1)),Y=v=>h-3-((v-mn)/rng)*(h-8);let d='';data.forEach((v,k)=>d+=(k?'L':'M')+X(k).toFixed(1)+' '+Y(v).toFixed(1)+' ');const area=d+`L${X(data.length-1).toFixed(1)} ${h} L${X(0).toFixed(1)} ${h} Z`;return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><defs><linearGradient id="sg${i}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${color}" stop-opacity=".22"/><stop offset="1" stop-color="${color}" stop-opacity="0"/></linearGradient></defs><path d="${area}" fill="url(#sg${i})"/><path d="${d}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${X(data.length-1).toFixed(1)}" cy="${Y(data[data.length-1]).toFixed(1)}" r="2.6" fill="#fff" stroke="${color}" stroke-width="1.6"/></svg>`;}
+function svgArea(labels,ty,ly){const W=720,H=270,padL=40,padR=12,padT=14,padB=28;const pW=W-padL-padR,pH=H-padT-padB;const n=labels.length;const max=niceCeil(Math.max(1,...ty,...ly));const X=i=>padL+i*pW/(Math.max(1,n-1)),Y=v=>padT+pH-(v/max)*pH;const path=a=>a.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)).join(' ');const area=path(ty)+` L${X(n-1).toFixed(1)} ${padT+pH} L${X(0).toFixed(1)} ${padT+pH} Z`;
+  let g='';for(let i=0;i<=2;i++){const y=padT+pH-i*pH/2;g+=`<line x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" stroke="#E7EAE8" stroke-dasharray="3 4"/><text x="${padL-8}" y="${y+3}" text-anchor="end" font-size="10" fill="#8E8B80">${eur0(max*i/2).replace(' €','')}</text>`;}
+  let xl='';labels.forEach((m,i)=>xl+=`<text x="${X(i).toFixed(1)}" y="${H-8}" text-anchor="middle" font-size="10.5" fill="${i===n-1?'#16150F':'#8E8B80'}" font-weight="${i===n-1?700:400}">${m}</text>`);
+  const tyDots=ty.map((v,i)=>`<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="2.6" fill="#fff" stroke="#157A4E" stroke-width="1.6"/>`).join('');
+  const lyDots=ly.map((v,i)=>`<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="2.4" fill="#fff" stroke="#3E7CB1" stroke-width="1.5"/>`).join('');
+  /* Callout auf dem aktuellen (letzten) Monat */
+  const hi=n-1;const hx=X(hi),hyTop=Math.min(Y(ty[hi]),Y(ly[hi]));const boxW=150,boxH=64;const bx=hx>W/2?hx-boxW-10:hx+10;const by=Math.max(padT,hyTop-boxH/2);
+  const marker=`<line x1="${hx.toFixed(1)}" y1="${padT}" x2="${hx.toFixed(1)}" y2="${padT+pH}" stroke="#C9CFCC"/><circle cx="${hx.toFixed(1)}" cy="${Y(ty[hi]).toFixed(1)}" r="5" fill="#157A4E" stroke="#fff" stroke-width="2.5"/>`;
+  const tip=`<g transform="translate(${bx.toFixed(1)},${by.toFixed(1)})"><rect width="${boxW}" height="${boxH}" rx="10" fill="#16150F"/><text x="12" y="19" font-size="9.5" fill="#9AA69F" letter-spacing="1">${(labels[hi]||'').toUpperCase()} ${new Date(todayISO()).getFullYear()}</text><circle cx="15" cy="34" r="3.5" fill="#2ECd8a"/><text x="26" y="37" font-size="11" fill="#fff">Dieses Jahr</text><text x="${boxW-12}" y="37" font-size="11" fill="#fff" text-anchor="end" font-weight="700">${eur0(ty[hi]||0)}</text><circle cx="15" cy="51" r="3.5" fill="#5EA0D4"/><text x="26" y="54" font-size="11" fill="#fff">Letztes Jahr</text><text x="${boxW-12}" y="54" font-size="11" fill="#fff" text-anchor="end" font-weight="700">${eur0(ly[hi]||0)}</text></g>`;
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:270px;display:block"><defs><linearGradient id="ag" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#157A4E" stop-opacity=".2"/><stop offset="1" stop-color="#157A4E" stop-opacity=".01"/></linearGradient></defs>${g}<path d="${area}" fill="url(#ag)"/><path d="${path(ly)}" fill="none" stroke="#3E7CB1" stroke-width="2.4"/><path d="${path(ty)}" fill="none" stroke="#157A4E" stroke-width="2.6"/>${lyDots}${tyDots}${xl}${marker}${tip}</svg>`;}
+function svgDonut(segs,center){const tot=segs.reduce((s,x)=>s+x[1],0)||1;const C=2*Math.PI*15.9;let off=25;let s='<circle cx="21" cy="21" r="15.9" fill="none" stroke="#EEF1EF" stroke-width="6"/>';segs.forEach(([n,val,c])=>{const len=val/tot*C;s+=`<circle cx="21" cy="21" r="15.9" fill="none" stroke="${c}" stroke-width="6" stroke-dasharray="${len.toFixed(2)} ${(C-len).toFixed(2)}" stroke-dashoffset="${off.toFixed(2)}" transform="rotate(-90 21 21)"/>`;off-=len;});s+=`<text x="21" y="20.5" text-anchor="middle" font-size="4.6" font-weight="800" fill="#16150F" font-family="Georgia,serif" font-style="italic">${center}</text><text x="21" y="25" text-anchor="middle" font-size="2.5" fill="#8E8B80">Jahresumsatz</text>`;return `<svg width="150" height="150" viewBox="0 0 42 42">${s}</svg>`;}
+function leistungAgg(yr){const py=invoices.filter(i=>i.belegart==='rechnung'&&i.status==='bezahlt'&&new Date(i.bezahltAm||i.datum).getFullYear()===yr);const m={};py.forEach(i=>(i.positionen||[]).forEach(p=>{const key=p.bez||'Sonstiges';m[key]=(m[key]||0)+(p.menge||0)*(p.einzel||0);}));return Object.entries(m).sort((a,b)=>b[1]-a[1]);}
+function mcard(lab,val,chg,icon,color,spark,goV,goF){return `<div class="card mcard" onclick="navTo('${goV}',${goF?`'${goF}'`:'null'})"><div class="mt"><div class="mtile" style="background:${color}1A"><svg viewBox="0 0 24 24" style="stroke:${color}">${ICON[icon]}</svg></div><div class="mlab">${lab}</div></div><div class="mval"><span class="num">${val}</span>${chg}</div>${spark}</div>`;}
+function renderDashboard(){
+  const yr=new Date().getFullYear();const dOf=i=>i.bezahltAm||i.datum;
+  const paid=invoices.filter(i=>i.belegart==='rechnung'&&i.status==='bezahlt');
+  const rechAll=invoices.filter(i=>i.belegart==='rechnung');
+  const yOf=v=>new Date(v).getFullYear();
+  const umThis=paid.filter(i=>yOf(dOf(i))===yr).reduce((s,i)=>s+i.brutto,0), umLast=paid.filter(i=>yOf(dOf(i))===yr-1).reduce((s,i)=>s+i.brutto,0);
+  const cntThis=rechAll.filter(i=>yOf(i.datum)===yr).length, cntLast=rechAll.filter(i=>yOf(i.datum)===yr-1).length;
+  const pT=paid.filter(i=>yOf(dOf(i))===yr), pL=paid.filter(i=>yOf(dOf(i))===yr-1);
+  const avgThis=pT.length?umThis/pT.length:0, avgLast=pL.length?umLast/pL.length:0;
+  const kostThis=expenses.filter(e=>yOf(e.datum)===yr).reduce((s,e)=>s+e.brutto,0), kostLast=expenses.filter(e=>yOf(e.datum)===yr-1).reduce((s,e)=>s+e.brutto,0);
+  const now=new Date(todayISO());const mo=[];for(let i=11;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);mo.push({key:d.getFullYear()+'-'+pad2(d.getMonth()+1),lkey:(d.getFullYear()-1)+'-'+pad2(d.getMonth()+1),label:['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'][d.getMonth()]});}
+  const sumInc=key=>paid.filter(i=>dOf(i).slice(0,7)===key).reduce((s,i)=>s+i.brutto,0);
+  const areaThis=mo.map(m=>sumInc(m.key)), areaLast=mo.map(m=>sumInc(m.lkey)), labels=mo.map(m=>m.label);
+  const mCnt=mo.map(m=>rechAll.filter(i=>i.datum.slice(0,7)===m.key).length);
+  const mAvg=mo.map(m=>{const a=paid.filter(i=>dOf(i).slice(0,7)===m.key);return a.length?a.reduce((s,i)=>s+i.brutto,0)/a.length:0;});
+  const mKost=mo.map(m=>expenses.filter(e=>e.datum.slice(0,7)===m.key).reduce((s,e)=>s+e.brutto,0));
+  const offen=rechAll.filter(i=>i.status!=='bezahlt');const offenSum=offen.reduce((s,i)=>s+i.brutto,0);
+  const overdue=offen.filter(i=>faelligDate(i)<todayISO()).sort((a,b)=>faelligDate(a).localeCompare(faelligDate(b)));
+  const lag=leistungAgg(yr);const COL=['#157A4E','#3E7CB1','#1FA368','#D68A2E','#7C69D6'];const lagTot=lag.reduce((s,x)=>s+x[1],0)||1;
+  const donSegs=lag.slice(0,4).map((x,i)=>[x[0],x[1],COL[i]]);const rest=lag.slice(4).reduce((s,x)=>s+x[1],0);if(rest>0)donSegs.push(['Sonstiges',rest,'#B7BEB9']);
+  const srcMax=Math.max(1,...lag.map(x=>x[1]));
+  main.innerHTML=`<div class="crumb">Arbeitsplatz › <b>Dashboard</b></div>
+  <div class="head"><div><h1>Übersicht</h1><div class="hsub">Werkstatt-Leistung · <b>${eur0(umThis)}</b> Umsatz in ${yr}</div></div>
+    <div class="hact"><div class="seg"><span class="on">12M</span></div>
+     <button class="btn sec" onclick="euerExport(${yr})"><svg class="i16" viewBox="0 0 24 24"><path d="M6 3h9l3 3v15H6z"/></svg>EÜR-Bericht</button>
+     <button class="btn" onclick="exportData()"><svg class="i16" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Export</button></div></div>
+  <div class="mgrid">
+    ${mcard('Umsatz ('+yr+')',eur0(umThis),chgChip(umThis,umLast),'euro','#157A4E',svgSpark(areaThis,'#157A4E',1),'dokumente','rechnung')}
+    ${mcard('Aufträge ('+yr+')',cntThis.toLocaleString('de-DE'),chgChip(cntThis,cntLast),'doc','#3E7CB1',svgSpark(mCnt,'#3E7CB1',2),'dokumente','rechnung')}
+    ${mcard('Ø Auftragswert',eur0(avgThis),chgChip(avgThis,avgLast),'user','#D68A2E',svgSpark(mAvg,'#D68A2E',3),'dokumente','rechnung')}
+    ${mcard('Kosten ('+yr+')',eur0(kostThis),chgChip(kostThis,kostLast),'euro','#7C69D6',svgSpark(mKost,'#7C69D6',4),'finanzen',null)}
+  </div>
+  <div class="drow">
+    <div class="card ch"><div class="chh"><div class="ti">${iconSvg(ICON.euro)}</div><b>Umsatz über Zeit</b><div class="leg"><span><i style="background:#157A4E"></i>Dieses Jahr</span><span><i style="background:#3E7CB1"></i>Letztes Jahr</span></div></div>${svgArea(labels,areaThis,areaLast)}</div>
+    <div class="card ch"><div class="chh"><div class="ti"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 109 9h-9z"/></svg></div><b>Einnahmen nach Leistung</b></div>
+      <div class="donut">${lag.length?svgDonut(donSegs,eur0(umThis)):'<div class="muted" style="padding:20px 0">Noch keine bezahlten Rechnungen.</div>'}<div class="dleg">${donSegs.map(([n,val,c])=>`<div class="r"><i style="background:${c}"></i>${esc(n)}<b>${Math.round(val/lagTot*100)}%</b></div>`).join('')}</div></div>
+      <div class="meta"><div class="r"><span>Offene Forderungen</span><b>${eur0(offenSum)}</b></div><div class="r"><span>Aufträge gesamt</span><b>${rechAll.length}</b></div></div></div>
+  </div>
+  <div class="drow2">
+    <div class="card ch"><div class="chh"><div class="ti">${iconSvg(ICON.bell)}</div><b>Rechnungserinnerungen</b><span class="muted" style="margin-left:auto">${overdue.length} überfällig</span></div>
+     ${overdue.length?overdue.slice(0,6).map(i=>{const em=custEmail(i.kunde.name),tel=custTel(i.kunde.name);const ctx={name:i.kunde.name,nr:i.no,betrag:eur(i.brutto),firma:settings.firma};const days=-daysUntil(faelligDate(i));return `<div class="rep"><div class="ti2">⏰</div><div><b>${esc(i.kunde.name)} · ${esc(i.no)}</b><small>${eur(i.brutto)} · ${days} Tg. überfällig</small></div><div class="repact"><a class="btn ghost sm" href="${mailLink(em,settings.tpl.mahnung,ctx,faelligDate(i))}">✉</a><button class="btn sec sm" onclick="setStatus('${i.id}','bezahlt')">bezahlt</button></div></div>`;}).join(''):'<div class="empty" style="margin-top:10px">Keine überfälligen Rechnungen.</div>'}</div>
+    <div class="card ch"><div class="chh"><div class="ti"><svg viewBox="0 0 24 24"><path d="M4 19h16M7 19V9M12 19V5M17 19v-7"/></svg></div><b>Umsatz nach Leistung</b><button class="btn sec sm" style="margin-left:auto" onclick="go('finanzen')">Details</button></div>
+     <div style="margin-top:14px">${lag.length?lag.slice(0,6).map(([n,val])=>`<div class="srcrow"><div class="rr"><span>${esc(n)}</span><b>${eur0(val)}</b></div><div class="track"><span style="width:${(val/srcMax*100).toFixed(0)}%"></span></div></div>`).join(''):'<div class="muted">Noch keine Einnahmen erfasst.</div>'}</div></div>
+  </div>`;
+}
+let searchQ='';
+function doSearch(q){searchQ=(q||'').trim();if(!searchQ){if(view==='suche')go('dashboard');return;}view='suche';renderNav();renderSearch();}
+function renderSearch(){
+  const q=searchQ.toLowerCase();
+  const cust=customers.filter(c=>[c.name,c.kennzeichen,c.fahrzeug,c.tel,c.email].some(x=>(x||'').toLowerCase().includes(q)));
+  const inv=invoices.filter(i=>[i.no,i.kunde&&i.kunde.name].some(x=>(x||'').toLowerCase().includes(q)));
+  main.innerHTML=`<div class="crumb">Arbeitsplatz › <b>Suche</b></div><div class="head"><div><h1>Suche</h1><div class="hsub">„${esc(searchQ)}" · ${cust.length} Kunden · ${inv.length} Belege</div></div></div>
+  <div class="card ch" style="margin-bottom:14px"><div class="chh"><div class="ti">${iconSvg(ICON.user)}</div><b>Kunden</b></div>
+   ${cust.length?cust.slice(0,20).map(c=>`<div class="rep" style="cursor:pointer" onclick="editCustAfter='${c.id}';view='kunden';renderNav();render()"><div class="ti2">👤</div><div><b>${esc(c.name)}</b><small>${esc((c.fahrzeug||'')+' '+(c.kennzeichen||''))} · ${esc(c.tel||'')}</small></div><div class="repact"><span class="btn ghost sm">öffnen</span></div></div>`).join(''):'<div class="muted" style="margin-top:8px">Keine Treffer.</div>'}</div>
+  <div class="card ch"><div class="chh"><div class="ti">${iconSvg(ICON.doc)}</div><b>Belege</b></div>
+   ${inv.length?`<div style="overflow-x:auto;margin-top:6px"><table><thead><tr><th>Nr.</th><th>Kunde</th><th class="num">Brutto</th><th></th></tr></thead><tbody>${inv.slice(0,30).map(i=>`<tr><td><b>${esc(i.no)}</b></td><td>${esc(i.kunde.name)}</td><td class="num">${eur(i.brutto)}</td><td class="num"><button class="btn ghost sm" onclick="printDoc('${i.id}')">Drucken</button><button class="btn ghost sm" onclick="editDoc('${i.id}')">Bearb.</button></td></tr>`).join('')}</tbody></table></div>`:'<div class="muted" style="margin-top:8px">Keine Treffer.</div>'}</div>`;
+}
+
+/* ---------- ERINNERUNGEN ---------- */
+const ICO={hu:'🛠️',oel:'🛢️',inspektion:'🔧',geburtstag:'🎂'};
+function renderReminders(){
+  const rems=computeReminders();
+  const over=rems.filter(r=>r.days<0).length,soon=rems.filter(r=>r.days>=0).length;
+  const openInv=invoices.filter(i=>i.belegart==='rechnung'&&i.status!=='bezahlt').reduce((s,i)=>s+i.brutto,0);
+  main.innerHTML=`<div class="toolbar"><div><h2>Erinnerungen</h2><div class="muted">Fällig in den nächsten ${settings.remLead} Tagen</div></div>
+    <div class="row"><button class="btn sec sm" onclick="remindersCSV()">Fällige als CSV</button><span class="muted" style="align-self:center">Zeitraum</span><select class="i" style="width:auto" onchange="settings.remLead=+this.value;save(K.set,settings);renderNav();render()">${[14,30,45,60,90].map(x=>`<option ${x==settings.remLead?'selected':''}>${x}</option>`).join('')}</select></div></div>
+  <div class="kpi">
+    <div class="c"><div class="n" style="color:var(--red)">${over}</div><div class="l">überfällig</div></div>
+    <div class="c"><div class="n" style="color:var(--amber)">${soon}</div><div class="l">bald fällig</div></div>
+    <div class="c"><div class="n">${customers.length}</div><div class="l">Kunden</div></div>
+    <div class="c"><div class="n">${eur(openInv)}</div><div class="l">offene Rechnungen</div></div>
+  </div>
+  ${rems.length?rems.map(r=>{
+    const cls=r.type==='geburtstag'?'bday':(r.days<0?'over':'soon');
+    const when=r.type==='geburtstag'?(r.days===0?'heute':`in ${r.days} Tagen`):(r.days<0?`überfällig seit ${Math.abs(r.days)} Tg.`:(r.days===0?'heute fällig':`in ${r.days} Tagen`));
+    const tpl=settings.tpl[r.type];
+    const ml=mailLink(r.c.email,tpl,r.ctx,r.datum), wl=waLink(r.c.tel,tpl,r.ctx,r.datum);
+    return `<div class="rem ${cls}"><div class="ic" style="background:var(--tint)">${ICO[r.type]}</div>
+      <div><div class="t">${esc(r.c.name)} · ${esc(r.titel)}</div>
+      <div class="s">${esc((r.c.fahrzeug||'')+' '+(r.c.kennzeichen||''))||'—'} · ${r.type==='geburtstag'?'Geburtstag':'fällig'} ${deDate(r.datum)} · <b style="color:${r.days<0?'var(--red)':'var(--amber)'}">${when}</b></div></div>
+      <div class="act">
+        ${r.c.email?`<a class="btn ghost sm" href="${ml}">✉ E-Mail</a>`:''}
+        ${r.c.tel?`<a class="btn ghost sm" href="${wl}" target="_blank">WhatsApp</a>`:''}
+        ${r.type!=='geburtstag'?`<button class="btn sec sm" onclick="doneRem('${r.c.id}','${r.type}')">erledigt</button>`:''}
+        <button class="btn ghost sm" onclick="view='kunden';editCustAfter='${r.c.id}';renderNav();render()">Kunde</button>
+      </div></div>`;
+  }).join(''):`<div class="empty">Keine Erinnerungen in diesem Zeitraum. Trag bei den Kunden Fahrzeug-Daten (HU, Ölwechsel, Geburtstag) ein.</div>`}`;
+}
+function doneRem(cid,type){
+  const c=customers.find(x=>x.id===cid);if(!c)return;
+  if(type==='hu'){const n=prompt('Neues HU/AU-Fälligkeitsdatum (JJJJ-MM-TT):',addMonths(todayISO(),24));if(n)c.huFaellig=n;}
+  if(type==='oel'){c.oelLetzte=todayISO();}
+  if(type==='inspektion'){c.inspLetzte=todayISO();}
+  save(K.cust,customers);renderNav();render();
+}
+
+/* ---------- EDITOR (Rechnung + KVA) ---------- */
+function newDraft(){return{id:uid(),belegart:'rechnung',no:null,datum:todayISO(),leistungsdatum:todayISO(),ziel:settings.ziel,kunde:{name:'',strasse:'',plz:'',ort:''},kundeId:'',positionen:[{bez:'',menge:1,einzel:0,mwst:settings.kleinunternehmer?0:19}],notiz:''};}
+function renderEditor(){
+  const d=draft;const isKva=d.belegart==='kva';
+  const yr=new Date(d.datum||todayISO()).getFullYear();
+  const num0=(pre,n)=>pre+yr+'-'+String(n).padStart(4,'0');
+  const preview=d.belegart==='kva'?num0(settings.kvaPrefix,settings.nextKva):d.belegart==='auftrag'?num0(settings.auftragPrefix||'AU-',settings.nextAuftrag||1):num0(settings.prefix,settings.nextNo);
+  main.innerHTML=`<div class="toolbar"><div><h2>${d._edit?'Beleg bearbeiten':'Neuer Beleg'}</h2>
+  <div class="muted">${d.no?'Nummer: <b>'+esc(d.no)+'</b>':'Nummer wird automatisch vergeben: <b>'+esc(preview)+'</b>'}</div></div>
+  <div class="row">${['rechnung','auftrag','kva'].map(t=>`<span class="chip ${d.belegart===t?'on':''}" onclick="draft.belegart='${t}';renderEditor()">${t==='kva'?'Kostenvoranschlag':t==='auftrag'?'Auftrag':'Rechnung'}</span>`).join('')}</div></div>
+  ${settings.kleinunternehmer?`<div class="hint">Kleinunternehmer § 19 UStG: keine Umsatzsteuer wird ausgewiesen.</div>`:''}
+  <div class="card grid g2" style="margin-bottom:14px">
+    <div><label class="f">Kunde wählen</label>
+      <select class="i" onchange="pickCustomer(this.value)"><option value="">— aus Kundenliste —</option>
+      ${customers.map(c=>`<option value="${c.id}" ${c.id===d.kundeId?'selected':''}>${esc(c.name)}</option>`).join('')}</select>
+      <div class="grid g2" style="margin-top:10px">
+        <div><label class="f">Name / Firma</label><input class="i" value="${esc(d.kunde.name)}" oninput="draft.kunde.name=this.value"></div>
+        <div><label class="f">Straße</label><input class="i" value="${esc(d.kunde.strasse)}" oninput="draft.kunde.strasse=this.value"></div>
+        <div><label class="f">PLZ</label><input class="i" value="${esc(d.kunde.plz)}" oninput="draft.kunde.plz=this.value"></div>
+        <div><label class="f">Ort</label><input class="i" value="${esc(d.kunde.ort)}" oninput="draft.kunde.ort=this.value"></div>
+      </div>
+    </div>
+    <div class="grid g2" style="align-content:start">
+      <div><label class="f">${d.belegart==='rechnung'?'Rechnungsdatum':'Datum'}</label><input type="date" class="i" value="${d.datum}" oninput="draft.datum=this.value"></div>
+      <div><label class="f">Leistungsdatum</label><input type="date" class="i" value="${d.leistungsdatum}" oninput="draft.leistungsdatum=this.value"></div>
+      ${d.belegart==='rechnung'?`<div><label class="f">Zahlungsziel (Tage)</label><input type="number" class="i" value="${d.ziel}" oninput="draft.ziel=+this.value"></div>`:''}
+      ${d.belegart==='auftrag'?`<div><label class="f">Fahrzeug</label><input class="i" value="${esc(d.fahrzeug||'')}" oninput="draft.fahrzeug=this.value"></div><div><label class="f">Kennzeichen</label><input class="i" value="${esc(d.kennzeichen||'')}" oninput="draft.kennzeichen=this.value"></div><div><label class="f">km-Stand</label><input class="i" value="${esc(d.kmStand||'')}" oninput="draft.kmStand=this.value"></div>`:''}
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:14px">
+    <div class="flex-between" style="margin-bottom:10px"><b>Positionen</b>
+      <div class="row">
+        <select class="i" style="width:auto;padding:6px 8px" onchange="if(this.value){addPos(this.value);this.value=''}"><option value="">+ Leistung…</option>${items.map(it=>`<option value="${it.id}">${esc(it.name)} (${eur(it.preis)})</option>`).join('')}</select>
+        ${parts.length?`<select class="i" style="width:auto;padding:6px 8px" onchange="if(this.value){addPartPos(this.value);this.value=''}"><option value="">+ Teil (Nr.)…</option>${parts.map(p=>`<option value="${p.id}">${esc((p.nummer?p.nummer+' · ':'')+p.name)} (${eur(p.vk)})</option>`).join('')}</select>`:''}
+      </div></div>
+    <div class="poshead"><div>Bezeichnung</div><div>Menge</div><div>Einzel €</div><div>MwSt %</div><div style="text-align:right">Summe</div><div></div></div>
+    <div id="posList"></div>
+    <button class="btn sec sm" onclick="draft.positionen.push({bez:'',menge:1,einzel:0,mwst:settings.kleinunternehmer?0:19});renderPos()">+ Leere Position</button>
+    <div class="totbox" id="totbox"></div>
+  </div>
+  <div class="card" style="margin-bottom:14px"><label class="f">Notiz / Hinweis</label><textarea class="i" rows="2" oninput="draft.notiz=this.value">${esc(d.notiz)}</textarea></div>
+  <div class="row">
+    <button class="btn" onclick="saveDoc(false)">Speichern</button>
+    <button class="btn sec" onclick="saveDoc(true)">Speichern &amp; Drucken</button>
+    <button class="btn sec" onclick="draft=null;go('dokumente')">Abbrechen</button>
+  </div>`;
+  renderPos();
+}
+function pickCustomer(id){const c=customers.find(x=>x.id===id);draft.kundeId=id;if(c)draft.kunde={name:c.name,strasse:c.strasse,plz:c.plz,ort:c.ort};renderEditor();}
+function addPos(itemId){const it=items.find(x=>x.id===itemId);if(it)draft.positionen.push({bez:it.name,menge:1,einzel:it.preis,mwst:settings.kleinunternehmer?0:it.mwst});renderPos();}
+function renderPos(){const host=document.getElementById('posList');if(!host)return;
+  host.innerHTML=draft.positionen.map((p,i)=>`<div class="posrow">
+    <input class="i" placeholder="Leistung / Artikel" value="${esc(p.bez)}" oninput="draft.positionen[${i}].bez=this.value">
+    <input class="i" type="number" step="0.5" value="${p.menge}" oninput="draft.positionen[${i}].menge=+this.value;renderTot()">
+    <input class="i" type="number" step="0.01" value="${p.einzel}" oninput="draft.positionen[${i}].einzel=+this.value;renderTot()">
+    <input class="i" type="number" step="1" value="${p.mwst}" ${settings.kleinunternehmer?'disabled':''} oninput="draft.positionen[${i}].mwst=+this.value;renderTot()">
+    <div class="num" style="font-weight:700">${eur((p.menge||0)*(p.einzel||0))}</div>
+    <button class="x del" onclick="draft.positionen.splice(${i},1);renderPos()">✕</button></div>`).join('');
+  renderTot();
+}
+function calc(d){let netto=0,steuer=0;const by={};d.positionen.forEach(p=>{const z=(p.menge||0)*(p.einzel||0);netto+=z;const s=settings.kleinunternehmer?0:(p.mwst||0);const st=z*s/100;steuer+=st;by[s]=(by[s]||0)+st;});return{netto,steuer,brutto:netto+steuer,by};}
+function renderTot(){const t=calc(draft);const box=document.getElementById('totbox');if(!box)return;
+  box.innerHTML=`<div class="tr"><span>Netto</span><span>${eur(t.netto)}</span></div>
+  ${settings.kleinunternehmer?'':Object.entries(t.by).filter(([s])=>+s>0).map(([s,v])=>`<div class="tr"><span>zzgl. ${s}% MwSt.</span><span>${eur(v)}</span></div>`).join('')}
+  <div class="tr big"><span>Gesamt</span><span>${eur(t.brutto)}</span></div>`;
+}
+function saveDoc(thenPrint){
+  if(!draft.kunde.name){alert('Bitte Kunde angeben.');return;}
+  if(!draft.positionen.some(p=>p.bez)){alert('Mindestens eine Position mit Bezeichnung.');return;}
+  const t=calc(draft);draft.positionen=draft.positionen.filter(p=>p.bez);
+  Object.assign(draft,{netto:t.netto,steuer:t.steuer,brutto:t.brutto});
+  const ex=invoices.find(x=>x.id===draft.id);
+  if(ex){Object.assign(ex,draft);}
+  else{
+    const yr=new Date(draft.datum).getFullYear();
+    if(draft.belegart==='kva'){draft.no=settings.kvaPrefix+yr+'-'+String(settings.nextKva).padStart(4,'0');settings.nextKva++;draft.status='offen';}
+    else if(draft.belegart==='auftrag'){draft.no=settings.auftragPrefix+yr+'-'+String(settings.nextAuftrag).padStart(4,'0');settings.nextAuftrag++;draft.status='offen';}
+    else{draft.no=settings.prefix+yr+'-'+String(settings.nextNo).padStart(4,'0');settings.nextNo++;draft.status='offen';}
+    save(K.set,settings);draft.createdAt=Date.now();invoices.push(draft);
+    if(draft.belegart==='rechnung'){let ch=false;draft.positionen.forEach(p=>{if(p.partId){const pt=parts.find(x=>x.id===p.partId);if(pt){pt.bestand=(+pt.bestand||0)-(+p.menge||0);ch=true;}}});if(ch)save('kfz_parts',parts);}
+  }
+  save(K.inv,invoices);const id=draft.id;draft=null;
+  if(thenPrint)printDoc(id);
+  go('dokumente');
+}
+
+/* ---------- DOKUMENTE ---------- */
+function renderDocs(){
+  let rows=[...invoices].sort((a,b)=>b.createdAt-a.createdAt);
+  if(docFilter==='rechnung')rows=rows.filter(r=>r.belegart==='rechnung');
+  if(docFilter==='kva')rows=rows.filter(r=>r.belegart==='kva');
+  if(docFilter==='auftrag')rows=rows.filter(r=>r.belegart==='auftrag');
+  const re=invoices.filter(i=>i.belegart==='rechnung');
+  const umsatz=re.filter(i=>i.status==='bezahlt').reduce((s,i)=>s+i.brutto,0);
+  const offen=re.filter(i=>i.status!=='bezahlt').reduce((s,i)=>s+i.brutto,0);
+  main.innerHTML=`<div class="toolbar"><div><h2>Rechnungen &amp; Kostenvoranschläge</h2></div>
+  <button class="btn" onclick="draft=newDraft();go('neu')">+ Neuer Beleg</button></div>
+  <div class="kpi">
+    <div class="c"><div class="n" style="color:var(--green-deep)">${eur(umsatz)}</div><div class="l">Umsatz bezahlt</div></div>
+    <div class="c"><div class="n" style="color:var(--amber)">${eur(offen)}</div><div class="l">offene Rechnungen</div></div>
+    <div class="c"><div class="n">${re.length}</div><div class="l">Rechnungen</div></div>
+  </div>
+  <div class="row" style="margin-bottom:12px">
+    <button class="btn sec sm" onclick="document.getElementById('invin').click()">Rechnungen importieren</button>
+    <button class="btn sec sm" onclick="document.getElementById('payin').click()">Zahlungen abgleichen</button>
+    <button class="btn ghost sm" onclick="invoiceCsvTemplate()">Vorlage Rechnungen</button>
+    <button class="btn ghost sm" onclick="paymentCsvTemplate()">Vorlage Zahlungen</button>
+    <input type="file" id="invin" accept=".csv" style="display:none" onchange="importInvoicesCSV(event)">
+    <input type="file" id="payin" accept=".csv" style="display:none" onchange="importPaymentsCSV(event)">
+  </div>
+  <div class="row" style="margin-bottom:12px">${[['alle','Alle'],['rechnung','Rechnungen'],['auftrag','Aufträge'],['kva','Kostenvoranschläge']].map(([f,l])=>`<span class="chip ${docFilter===f?'on':''}" onclick="docFilter='${f}';render()">${l}</span>`).join('')}</div>
+  ${rows.length?`<div class="card" style="padding:0;overflow-x:auto"><table>
+    <thead><tr><th>Art</th><th>Nr.</th><th>Datum</th><th>Kunde</th><th class="num">Brutto</th><th>Status</th><th></th></tr></thead>
+    <tbody>${rows.map(r=>{const art=r.belegart==='kva'?['KVA','kva']:r.belegart==='auftrag'?['AU','au']:['RE','re'];return`<tr>
+      <td><span class="pill ${art[1]}">${art[0]}</span></td>
+      <td><b>${esc(r.no)}</b></td><td>${deDate(r.datum)}</td><td>${esc(r.kunde.name)}</td>
+      <td class="num">${eur(r.brutto)}</td><td><span class="pill ${r.status}">${({offen:'Offen',bezahlt:'Bezahlt',angenommen:'Angenommen',abgelehnt:'Abgelehnt',erledigt:'Erledigt'})[r.status]||r.status}</span></td>
+      <td class="num">
+        <button class="btn ghost sm" onclick="printDoc('${r.id}')">Drucken</button>
+        ${r.belegart==='kva'?`<button class="btn ghost sm" onclick="convertTo('${r.id}','auftrag')">→ Auftrag</button><button class="btn ghost sm" onclick="convertTo('${r.id}','rechnung')">→ Rechnung</button>`
+         :r.belegart==='auftrag'?`<button class="btn ghost sm" onclick="convertTo('${r.id}','rechnung')">→ Rechnung</button><button class="btn ghost sm" onclick="setStatus('${r.id}','${r.status==='erledigt'?'offen':'erledigt'}')">${r.status==='erledigt'?'→ offen':'✓ erledigt'}</button>`
+         :`<button class="btn ghost sm" onclick="setStatus('${r.id}','${r.status==='bezahlt'?'offen':'bezahlt'}')">${r.status==='bezahlt'?'→ offen':'→ bezahlt'}</button><button class="btn ghost sm" onclick="xrechnungExport('${r.id}')">XRechnung</button>${r.status==='bezahlt'?`<a class="btn ghost sm" href="${mailLink(custEmail(r.kunde.name),settings.tpl.bewertung,{name:r.kunde.name,firma:settings.firma,link:settings.googleReview||''},r.datum)}">★ Bewertung</a>`:''}`}
+        <button class="btn ghost sm" onclick="editDoc('${r.id}')">Bearb.</button>
+        <button class="btn ghost sm" style="color:var(--red)" onclick="delDoc('${r.id}')">🗑</button>
+      </td></tr>`;}).join('')}</tbody></table></div>`:`<div class="empty">Noch keine Belege.</div>`}`;
+}
+function setStatus(id,s){const i=invoices.find(x=>x.id===id);i.status=s;save(K.inv,invoices);render();}
+function delDoc(id){if(confirm('Beleg löschen?')){invoices=invoices.filter(x=>x.id!==id);save(K.inv,invoices);render();}}
+function editDoc(id){draft=JSON.parse(JSON.stringify(invoices.find(x=>x.id===id)));draft._edit=true;go('neu');}
+function convertTo(id,target){const k=invoices.find(x=>x.id===id);if(!k)return;draft=JSON.parse(JSON.stringify(k));draft.id=uid();draft.belegart=target;draft.no=null;draft._edit=false;draft.status='offen';delete draft.createdAt;delete draft.bezahltAm;go('neu');}
+function xrechnungExport(id){const r=invoices.find(x=>x.id===id);if(!r)return;const s=settings;const x=v=>String(v??'').replace(/[<&>]/g,c=>({'<':'&lt;','&':'&amp;','>':'&gt;'}[c]));
+  const lines=r.positionen.map((p,i)=>`  <cac:InvoiceLine><cbc:ID>${i+1}</cbc:ID><cbc:InvoicedQuantity unitCode="H87">${p.menge||0}</cbc:InvoicedQuantity><cbc:LineExtensionAmount currencyID="EUR">${((p.menge||0)*(p.einzel||0)).toFixed(2)}</cbc:LineExtensionAmount><cac:Item><cbc:Name>${x(p.bez)}</cbc:Name><cac:ClassifiedTaxCategory><cbc:ID>${s.kleinunternehmer?'E':'S'}</cbc:ID><cbc:Percent>${s.kleinunternehmer?0:(p.mwst||0)}</cbc:Percent><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:ClassifiedTaxCategory></cac:Item><cac:Price><cbc:PriceAmount currencyID="EUR">${(p.einzel||0).toFixed(2)}</cbc:PriceAmount></cac:Price></cac:InvoiceLine>`).join('\n');
+  const xml=`<?xml version="1.0" encoding="UTF-8"?>
+<ubl:Invoice xmlns:ubl="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+  <cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:xoev-de:kosit:standard:xrechnung_3.0</cbc:CustomizationID>
+  <cbc:ID>${x(r.no)}</cbc:ID>
+  <cbc:IssueDate>${r.datum}</cbc:IssueDate>
+  <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
+  <cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>
+  <cac:AccountingSupplierParty><cac:Party><cac:PartyName><cbc:Name>${x(s.firma)}</cbc:Name></cac:PartyName><cac:PostalAddress><cbc:StreetName>${x(s.strasse)}</cbc:StreetName><cbc:CityName>${x(s.ort)}</cbc:CityName><cbc:PostalZone>${x(s.plz)}</cbc:PostalZone><cac:Country><cbc:IdentificationCode>DE</cbc:IdentificationCode></cac:Country></cac:PostalAddress><cac:PartyTaxScheme><cbc:CompanyID>${x(s.ustid||s.steuernr)}</cbc:CompanyID><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:PartyTaxScheme></cac:Party></cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty><cac:Party><cac:PartyName><cbc:Name>${x(r.kunde.name)}</cbc:Name></cac:PartyName><cac:PostalAddress><cbc:StreetName>${x(r.kunde.strasse)}</cbc:StreetName><cbc:CityName>${x(r.kunde.ort)}</cbc:CityName><cbc:PostalZone>${x(r.kunde.plz)}</cbc:PostalZone><cac:Country><cbc:IdentificationCode>DE</cbc:IdentificationCode></cac:Country></cac:PostalAddress></cac:Party></cac:AccountingCustomerParty>
+  <cac:TaxTotal><cbc:TaxAmount currencyID="EUR">${(r.steuer||0).toFixed(2)}</cbc:TaxAmount></cac:TaxTotal>
+  <cac:LegalMonetaryTotal><cbc:TaxExclusiveAmount currencyID="EUR">${(r.netto||0).toFixed(2)}</cbc:TaxExclusiveAmount><cbc:TaxInclusiveAmount currencyID="EUR">${(r.brutto||0).toFixed(2)}</cbc:TaxInclusiveAmount><cbc:PayableAmount currencyID="EUR">${(r.brutto||0).toFixed(2)}</cbc:PayableAmount></cac:LegalMonetaryTotal>
+${lines}
+</ubl:Invoice>`;
+  dl(xml,'xrechnung-'+r.no+'.xml','application/xml');}
+
+/* ---------- KUNDEN & FAHRZEUGE ---------- */
+let editCustAfter=null;
+function renderCustomers(){
+  main.innerHTML=`<div class="toolbar"><div><h2>Kunden &amp; Fahrzeuge</h2><div class="muted">${customers.length} gespeichert · Fahrzeugdaten füttern die Erinnerungen</div></div>
+  <div class="row"><button class="btn sec sm" onclick="csvTemplate()">CSV-Vorlage</button><button class="btn sec sm" onclick="document.getElementById('csvin').click()">CSV-Import</button><input type="file" id="csvin" accept=".csv" style="display:none" onchange="importCSV(event)"><button class="btn" onclick="editCust()">+ Neuer Kunde</button></div></div>
+  ${customers.length?`<div class="card" style="padding:0;overflow-x:auto"><table><thead><tr><th>Kunde</th><th>Fahrzeug</th><th>HU/AU</th><th>Geburtstag</th><th></th></tr></thead>
+  <tbody>${customers.map(c=>`<tr><td><b>${esc(c.name)}</b><div class="muted">${esc(c.tel||'')} ${esc(c.email||'')}</div></td>
+  <td>${esc(c.fahrzeug||'—')}<div class="muted">${esc(c.kennzeichen||'')}</div></td>
+  <td>${c.huFaellig?deDate(c.huFaellig):'—'}</td><td>${c.geburtstag?deDate(c.geburtstag):'—'}</td>
+  <td class="num"><button class="btn ghost sm" onclick="editCust('${c.id}')">Bearb.</button><button class="btn ghost sm" style="color:var(--red)" onclick="delCust('${c.id}')">✕</button></td></tr>`).join('')}</tbody></table></div>`:`<div class="empty">Noch keine Kunden.</div>`}
+  <div id="custForm"></div>`;
+  if(editCustAfter){const id=editCustAfter;editCustAfter=null;editCust(id);}
+}
+function editCust(id){
+  const c=id?customers.find(x=>x.id===id):{id:uid(),name:'',strasse:'',plz:'',ort:'',tel:'',email:'',geburtstag:'',kennzeichen:'',fahrzeug:'',huFaellig:'',oelLetzte:'',oelInt:12,inspLetzte:'',inspInt:24};
+  document.getElementById('custForm').innerHTML=`<div class="card" style="margin-top:14px"><b>${id?'Kunde bearbeiten':'Neuer Kunde'}</b>
+  <div class="grid g2" style="margin-top:10px">
+    <div><label class="f">Name / Firma</label><input class="i" id="c_name" value="${esc(c.name)}"></div>
+    <div><label class="f">Geburtstag</label><input class="i" type="date" id="c_geb" value="${c.geburtstag||''}"></div>
+    <div><label class="f">Straße</label><input class="i" id="c_str" value="${esc(c.strasse)}"></div>
+    <div class="grid g2"><div><label class="f">PLZ</label><input class="i" id="c_plz" value="${esc(c.plz)}"></div><div><label class="f">Ort</label><input class="i" id="c_ort" value="${esc(c.ort)}"></div></div>
+    <div><label class="f">Telefon</label><input class="i" id="c_tel" value="${esc(c.tel)}"></div>
+    <div><label class="f">E-Mail</label><input class="i" id="c_mail" value="${esc(c.email)}"></div>
+  </div>
+  <div style="margin:14px 0 8px;font-weight:700;color:var(--green-deep)">Fahrzeug &amp; Service (für Erinnerungen)</div>
+  <div class="grid g2">
+    <div><label class="f">Fahrzeug (Modell)</label><input class="i" id="c_fz" value="${esc(c.fahrzeug)}"></div>
+    <div><label class="f">Kennzeichen</label><input class="i" id="c_kz" value="${esc(c.kennzeichen)}"></div>
+    <div><label class="f">HU/AU fällig bis</label><input class="i" type="date" id="c_hu" value="${c.huFaellig||''}"></div>
+    <div></div>
+    <div class="grid g2"><div><label class="f">Letzter Ölwechsel</label><input class="i" type="date" id="c_oel" value="${c.oelLetzte||''}"></div><div><label class="f">Intervall (Mon.)</label><input class="i" type="number" id="c_oeli" value="${c.oelInt||12}"></div></div>
+    <div class="grid g2"><div><label class="f">Letzte Inspektion</label><input class="i" type="date" id="c_insp" value="${c.inspLetzte||''}"></div><div><label class="f">Intervall (Mon.)</label><input class="i" type="number" id="c_inspi" value="${c.inspInt||24}"></div></div>
+  </div>
+  ${custHistory(c.id)}
+  <div class="row" style="margin-top:12px"><button class="btn" onclick="saveCust('${c.id}',${!!id})">Speichern</button>
+  <button class="btn sec" onclick="document.getElementById('custForm').innerHTML=''">Abbrechen</button></div></div>`;
+  document.getElementById('custForm').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function saveCust(id,exists){
+  const c={id,name:v('c_name'),geburtstag:v('c_geb'),strasse:v('c_str'),plz:v('c_plz'),ort:v('c_ort'),tel:v('c_tel'),email:v('c_mail'),
+    fahrzeug:v('c_fz'),kennzeichen:v('c_kz'),huFaellig:v('c_hu'),oelLetzte:v('c_oel'),oelInt:+v('c_oeli')||12,inspLetzte:v('c_insp'),inspInt:+v('c_inspi')||24};
+  if(!c.name){alert('Name fehlt');return;}
+  if(exists){const i=customers.findIndex(x=>x.id===id);customers[i]=c;}else customers.push(c);
+  save(K.cust,customers);renderNav();renderCustomers();
+}
+function delCust(id){if(confirm('Kunde löschen?')){customers=customers.filter(x=>x.id!==id);save(K.cust,customers);renderNav();renderCustomers();}}
+
+/* ---------- LEISTUNGEN ---------- */
+function renderItems(){
+  main.innerHTML=`<div class="toolbar"><div><h2>Leistungskatalog</h2></div><button class="btn" onclick="editItem()">+ Neue Leistung</button></div>
+  <div class="card" style="padding:0;overflow-x:auto"><table><thead><tr><th>Leistung</th><th class="num">Preis netto</th><th class="num">MwSt</th><th></th></tr></thead>
+  <tbody>${items.map(it=>`<tr><td>${esc(it.name)}</td><td class="num">${eur(it.preis)}</td><td class="num">${it.mwst}%</td>
+  <td class="num"><button class="btn ghost sm" onclick="editItem('${it.id}')">Bearb.</button><button class="btn ghost sm" style="color:var(--red)" onclick="delItem('${it.id}')">✕</button></td></tr>`).join('')}</tbody></table></div><div id="itemForm"></div>`;
+}
+function editItem(id){const it=id?items.find(x=>x.id===id):{id:uid(),name:'',preis:0,mwst:19};
+  document.getElementById('itemForm').innerHTML=`<div class="card" style="margin-top:14px"><b>${id?'Bearbeiten':'Neue Leistung'}</b>
+  <div class="grid g3" style="margin-top:10px"><div style="grid-column:1/-1"><label class="f">Bezeichnung</label><input class="i" id="i_name" value="${esc(it.name)}"></div>
+  <div><label class="f">Preis netto €</label><input class="i" type="number" step="0.01" id="i_preis" value="${it.preis}"></div>
+  <div><label class="f">MwSt %</label><input class="i" type="number" id="i_mwst" value="${it.mwst}"></div></div>
+  <div class="row" style="margin-top:12px"><button class="btn" onclick="saveItem('${it.id}',${!!id})">Speichern</button><button class="btn sec" onclick="document.getElementById('itemForm').innerHTML=''">Abbrechen</button></div></div>`;
+}
+function saveItem(id,exists){const it={id,name:v('i_name'),preis:+v('i_preis'),mwst:+v('i_mwst')};if(!it.name){alert('Bezeichnung fehlt');return;}if(exists){const i=items.findIndex(x=>x.id===id);items[i]=it;}else items.push(it);save(K.item,items);renderItems();}
+function delItem(id){if(confirm('Löschen?')){items=items.filter(x=>x.id!==id);save(K.item,items);renderItems();}}
+
+/* ---------- EINSTELLUNGEN ---------- */
+function renderSettings(){const s=settings;
+  main.innerHTML=`<h2>Einstellungen</h2><div class="muted" style="margin-bottom:14px">Firmendaten, Pflichtangaben &amp; E-Mail-Vorlagen</div>
+  ${!s.steuernr&&!s.ustid?`<div class="warn">Ohne Steuernummer/USt-IdNr. ist die Rechnung nicht vollständig (§ 14 UStG).</div>`:''}
+  <div class="card grid g2">
+    <div><label class="f">Firmenname</label><input class="i" id="s_firma" value="${esc(s.firma)}"></div>
+    <div><label class="f">Inhaber</label><input class="i" id="s_inh" value="${esc(s.inhaber)}"></div>
+    <div><label class="f">Straße, Hausnr.</label><input class="i" id="s_str" value="${esc(s.strasse)}"></div>
+    <div class="grid g2"><div><label class="f">PLZ</label><input class="i" id="s_plz" value="${esc(s.plz)}"></div><div><label class="f">Ort</label><input class="i" id="s_ort" value="${esc(s.ort)}"></div></div>
+    <div><label class="f">Telefon</label><input class="i" id="s_tel" value="${esc(s.tel)}"></div>
+    <div><label class="f">E-Mail</label><input class="i" id="s_mail" value="${esc(s.email)}"></div>
+    <div><label class="f">Steuernummer</label><input class="i" id="s_stnr" value="${esc(s.steuernr)}"></div>
+    <div><label class="f">USt-IdNr. (optional)</label><input class="i" id="s_ustid" value="${esc(s.ustid)}"></div>
+    <div><label class="f">IBAN</label><input class="i" id="s_iban" value="${esc(s.iban)}"></div>
+    <div class="grid g2"><div><label class="f">BIC</label><input class="i" id="s_bic" value="${esc(s.bic)}"></div><div><label class="f">Bank</label><input class="i" id="s_bank" value="${esc(s.bank)}"></div></div>
+    <div class="grid g2"><div><label class="f">Rechnung-Präfix</label><input class="i" id="s_prefix" value="${esc(s.prefix)}"></div><div><label class="f">Nächste Nr.</label><input class="i" type="number" id="s_next" value="${s.nextNo}"></div></div>
+    <div class="grid g2"><div><label class="f">KVA-Präfix</label><input class="i" id="s_kprefix" value="${esc(s.kvaPrefix)}"></div><div><label class="f">Nächste KVA-Nr.</label><input class="i" type="number" id="s_knext" value="${s.nextKva}"></div></div>
+    <div><label class="f">Zahlungsziel (Tage)</label><input class="i" type="number" id="s_ziel" value="${s.ziel}"></div>
+    <div><label class="f">Erinnerungs-Vorlauf (Tage)</label><input class="i" type="number" id="s_lead" value="${s.remLead}"></div>
+    <div><label class="f">Jahresziel Umsatz (€)</label><input class="i" type="number" id="s_jz" value="${s.jahresziel||50000}"></div>
+    <div style="grid-column:1/-1"><label class="f">Fußtext Beleg</label><input class="i" id="s_fuss" value="${esc(s.fuss)}"></div>
+    <div style="grid-column:1/-1"><label class="f">Google-Bewertungslink (für Bewertungsanfragen)</label><input class="i" id="s_grev" value="${esc(s.googleReview||'')}" placeholder="https://g.page/r/…"></div>
+    <div style="grid-column:1/-1"><label style="display:flex;align-items:center;gap:9px;font-size:14px"><input type="checkbox" id="s_klein" ${s.kleinunternehmer?'checked':''}> Kleinunternehmer § 19 UStG (keine MwSt)</label></div>
+  </div>
+  <div class="card" style="margin-top:14px"><b>E-Mail-Vorlagen</b><div class="muted" style="margin:2px 0 12px">Platzhalter: {name} {fahrzeug} {kennzeichen} {datum} {firma}</div>
+    ${[['hu','HU/AU'],['oel','Ölwechsel'],['inspektion','Inspektion'],['geburtstag','Geburtstag'],['mahnung','Zahlungserinnerung'],['bewertung','Bewertungsanfrage'],['terminbestaetigung','Terminbestätigung'],['terminerinnerung','Terminerinnerung']].map(([k,l])=>`
+      <div style="margin-bottom:12px"><label class="f">${l} – Betreff</label><input class="i" id="t_${k}_b" value="${esc(s.tpl[k].betreff)}">
+      <label class="f" style="margin-top:6px">${l} – Text</label><textarea class="i" id="t_${k}_t" rows="4">${esc(s.tpl[k].text)}</textarea></div>`).join('')}
+  </div>
+  <div class="card" style="margin-top:14px"><b>Cloud-Sync (Mehrbenutzer)</b><div class="muted" style="margin:2px 0 12px">Daten zentral in der Cloud (Supabase). Rollen: Inhaber / Mechaniker. URL + anon-Key eintragen, speichern, dann anmelden. Läuft nur in der selbst-gehosteten Version.</div>
+    <div class="grid g2">
+      <div><label class="f">Supabase-URL</label><input class="i" id="s_syncurl" value="${esc(s.syncUrl||'')}" placeholder="https://xxxx.supabase.co"></div>
+      <div><label class="f">anon public key</label><input class="i" id="s_synckey" value="${esc(s.syncKey||'')}" placeholder="eyJhbGciOi…"></div>
+      <div><label class="f">E-Mail (Login)</label><input class="i" id="sy_mail" placeholder="ahmet@…" autocomplete="username"></div>
+      <div><label class="f">Passwort</label><input class="i" type="password" id="sy_pw" autocomplete="current-password"></div>
+    </div>
+    <div class="row" style="margin-top:12px"><button class="btn sec" onclick="syncAuth()">Anmelden</button><button class="btn sec" onclick="syncPush()">Hochladen</button><button class="btn sec" onclick="syncPull()">Herunterladen</button></div>
+    <div id="syncStat" style="margin-top:10px">${syncTok?'<span class="hsub">Angemeldet</span>':'<span class="muted">Nicht angemeldet</span>'}</div></div>
+  <div class="card" style="margin-top:14px"><b>Teile-Connector (Online-Katalog &amp; Bestellung)</b><div class="muted" style="margin:2px 0 12px">URL des Teile-Connector-Dienstes (TecDoc/Lieferant). Leer lassen = Demo-Katalog. Läuft nur in der selbst-gehosteten Version.</div>
+    <input class="i" id="s_conn" value="${esc(s.teileConnectorUrl||'')}" placeholder="https://connector.kfz-oberberg.de  (leer = Demo)"></div>
+  <div class="card" style="margin-top:14px"><b>Backup &amp; Daten</b><div class="muted" style="margin:2px 0 12px">Alle Daten (Rechnungen, Kunden, Kosten, Einstellungen) sichern oder wiederherstellen.</div>
+    <div class="row"><button class="btn sec" onclick="exportData()">Backup exportieren (JSON)</button><button class="btn sec" onclick="document.getElementById('imp').click()">Backup importieren</button>
+    <input type="file" id="imp" accept="application/json" style="display:none" onchange="importData(event)"></div>
+    <div class="row" style="margin-top:10px"><button class="btn sec" onclick="loadDemo()">Beispieldaten laden</button><button class="btn sec" style="color:var(--red)" onclick="resetAll()">Alle Daten löschen</button></div></div>
+  <div class="row" style="margin-top:14px"><button class="btn" onclick="saveSettings()">Speichern</button></div>`;
+}
+function saveSettings(){
+  Object.assign(settings,{firma:v('s_firma'),inhaber:v('s_inh'),strasse:v('s_str'),plz:v('s_plz'),ort:v('s_ort'),tel:v('s_tel'),email:v('s_mail'),steuernr:v('s_stnr'),ustid:v('s_ustid'),iban:v('s_iban'),bic:v('s_bic'),bank:v('s_bank'),prefix:v('s_prefix'),nextNo:+v('s_next'),kvaPrefix:v('s_kprefix'),nextKva:+v('s_knext'),ziel:+v('s_ziel'),remLead:+v('s_lead'),jahresziel:+v('s_jz')||50000,fuss:v('s_fuss'),googleReview:v('s_grev'),teileConnectorUrl:v('s_conn'),syncUrl:v('s_syncurl'),syncKey:v('s_synckey'),kleinunternehmer:document.getElementById('s_klein').checked});
+  ['hu','oel','inspektion','geburtstag','mahnung','bewertung','terminbestaetigung','terminerinnerung'].forEach(k=>{settings.tpl[k]={betreff:v('t_'+k+'_b'),text:document.getElementById('t_'+k+'_t').value};});
+  save(K.set,settings);document.getElementById('hFirma').textContent=settings.firma;renderNav();alert('Gespeichert.');render();
+}
+
+/* ---------- DRUCK ---------- */
+function printDoc(id){
+  const r=invoices.find(x=>x.id===id);if(!r)return;const s=settings;const kva=r.belegart==='kva';const auf=r.belegart==='auftrag';const kl=s.kleinunternehmer;
+  const faellig=new Date(r.datum);faellig.setDate(faellig.getDate()+(r.ziel||14));
+  const fISO=faellig.getFullYear()+'-'+String(faellig.getMonth()+1).padStart(2,'0')+'-'+String(faellig.getDate()).padStart(2,'0');
+  document.getElementById('printArea').innerHTML=`<div class="inv">
+    <div class="top"><div>
+      <div class="absender">${esc(s.firma)} · ${esc(s.strasse)} · ${esc(s.plz)} ${esc(s.ort)}</div>
+      <div style="margin-top:14px;font-weight:700">${esc(r.kunde.name)}</div><div>${esc(r.kunde.strasse||'')}</div><div>${esc(r.kunde.plz||'')} ${esc(r.kunde.ort||'')}</div>
+    </div><div style="text-align:right"><div class="logo">${esc(s.firma)}</div>
+      <div style="font-size:11px;color:#555;margin-top:6px">${esc(s.strasse)}<br>${esc(s.plz)} ${esc(s.ort)}<br>${esc(s.tel)}<br>${esc(s.email)}</div></div></div>
+    <h1>${auf?'Werkstattauftrag':kva?'Kostenvoranschlag':'Rechnung'} ${esc(r.no)}</h1>
+    <div class="meta"><div><b>Datum:</b> ${deDate(r.datum)}</div><div><b>Leistungsdatum:</b> ${deDate(r.leistungsdatum)}</div><div><b>Nr.:</b> ${esc(r.no)}</div>${auf&&(r.fahrzeug||r.kennzeichen||r.kmStand)?`<div><b>Fahrzeug:</b> ${esc(r.fahrzeug||'')} ${esc(r.kennzeichen||'')}${r.kmStand?' · '+esc(r.kmStand)+' km':''}</div>`:''}</div>
+    <table><thead><tr><th>Pos.</th><th>Bezeichnung</th><th style="text-align:right">Menge</th><th style="text-align:right">Einzel</th>${kl?'':'<th style="text-align:right">MwSt</th>'}<th style="text-align:right">Betrag</th></tr></thead>
+      <tbody>${r.positionen.map((p,i)=>`<tr><td>${i+1}</td><td>${esc(p.bez)}</td><td style="text-align:right">${(p.menge||0).toLocaleString('de-DE')}</td><td style="text-align:right">${eur(p.einzel)}</td>${kl?'':`<td style="text-align:right">${p.mwst}%</td>`}<td style="text-align:right">${eur((p.menge||0)*(p.einzel||0))}</td></tr>`).join('')}</tbody></table>
+    <div style="display:flex;justify-content:flex-end;margin-top:12px"><table style="width:auto;min-width:260px">
+      <tr><td>Netto</td><td style="text-align:right">${eur(r.netto)}</td></tr>${kl?'':`<tr><td>zzgl. MwSt.</td><td style="text-align:right">${eur(r.steuer)}</td></tr>`}
+      <tr><td style="font-weight:800;font-size:15px">Gesamt</td><td style="text-align:right;font-weight:800;font-size:15px">${eur(r.brutto)}</td></tr></table></div>
+    ${kl?`<p style="margin-top:14px;font-size:11px;color:#555">Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.</p>`:''}
+    ${auf?`<p style="margin-top:16px">Bitte prüfen Sie die aufgeführten Arbeiten. Mit Ihrer Unterschrift erteilen Sie den Auftrag.</p><div style="display:flex;gap:40px;margin-top:44px"><div style="flex:1;border-top:1px solid #333;padding-top:6px;font-size:11px;color:#555">Ort, Datum</div><div style="flex:1;border-top:1px solid #333;padding-top:6px;font-size:11px;color:#555">Unterschrift Auftraggeber</div></div>`
+         :kva?`<p style="margin-top:16px">Dieser Kostenvoranschlag ist freibleibend und 14 Tage gültig. Es handelt sich um eine unverbindliche Schätzung.</p>`
+         :`<p style="margin-top:18px">Zahlbar bis <b>${deDate(fISO)}</b> ohne Abzug${s.iban?` auf: ${esc(s.iban)} (${esc(s.bank)})`:''}.</p>`}
+    ${r.notiz?`<p style="margin-top:8px">${esc(r.notiz)}</p>`:''}<p style="margin-top:10px;color:#555">${esc(s.fuss||'')}</p>
+    <div class="foot"><div><b>${esc(s.firma)}</b><br>${esc(s.inhaber)}<br>${esc(s.strasse)}<br>${esc(s.plz)} ${esc(s.ort)}</div>
+      <div><b>Kontakt</b><br>${esc(s.tel)}<br>${esc(s.email)}</div>
+      <div><b>Steuer</b><br>${s.steuernr?'Steuernr.: '+esc(s.steuernr):''}${s.ustid?'<br>USt-IdNr.: '+esc(s.ustid):''}</div>
+      <div><b>Bank</b><br>${esc(s.bank)}<br>${esc(s.iban)}<br>${esc(s.bic)}</div></div></div>`;
+  window.print();
+}
+
+/* ---------- BACKUP ---------- */
+function exportData(){const blob=new Blob([JSON.stringify({settings,customers,items,invoices,expenses,appointments,parts},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='werkstatt-backup-'+todayISO()+'.json';a.click();}
+function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(d.settings){settings=d.settings;if(!settings.tpl)settings.tpl=JSON.parse(JSON.stringify(DEF_TPL));save(K.set,settings);}if(d.customers){customers=d.customers;save(K.cust,customers);}if(d.items){items=d.items;save(K.item,items);}if(d.invoices){invoices=d.invoices;save(K.inv,invoices);}if(d.expenses){expenses=d.expenses;save('kfz_expenses',expenses);}if(d.appointments){appointments=d.appointments;save('kfz_appointments',appointments);}if(d.parts){parts=d.parts;save('kfz_parts',parts);}document.getElementById('hFirma').textContent=settings.firma;renderNav();alert('Import erfolgreich.');go('dashboard');}catch(err){alert('Datei fehlerhaft.');}};r.readAsText(f);}
+/* ---------- CSV IMPORT/EXPORT (Kassensystem-Anbindung) ---------- */
+function dl(content,name,type){const b=new Blob([content],{type});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click();}
+function normDate(s){if(!s)return'';s=(s||'').trim();if(/^\d{4}-\d{2}-\d{2}$/.test(s))return s;const m=s.match(/^(\d{1,2})[.\/](\d{1,2})[.\/](\d{4})$/);if(m)return m[3]+'-'+m[2].padStart(2,'0')+'-'+m[1].padStart(2,'0');return'';}
+function parseCSV(text){const first=(text.split('\n')[0]||'');const sep=first.includes(';')?';':',';const lines=text.replace(/\r/g,'').split('\n').filter(l=>l.trim());const head=lines.shift().split(sep).map(h=>h.trim().toLowerCase());return lines.map(l=>{const cells=l.split(sep);const o={};head.forEach((h,i)=>o[h]=(cells[i]||'').trim());return o;});}
+function csvTemplate(){dl('Name;Email;Telefon;Geburtstag;Fahrzeug;Kennzeichen;HU;Oelwechsel;Inspektion\nMax Mustermann;max@mail.de;0151234567;1985-06-12;VW Golf;GM-AB123;2026-11-30;2026-03-01;2025-09-01\n','kunden-import-vorlage.csv','text/csv');}
+function importCSV(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{
+  const rows=parseCSV(r.result);let add=0,upd=0;
+  rows.forEach(row=>{const get=(...ks)=>{for(const k of ks){if(row[k])return row[k];}return'';};
+    const name=get('name','kunde','kundenname');if(!name)return;
+    const kz=get('kennzeichen','kfz-kennzeichen','kfz kennzeichen');
+    const data={name,email:get('email','e-mail','mail'),tel:get('telefon','tel','handy','mobil'),geburtstag:normDate(get('geburtstag','geb','geburtsdatum')),fahrzeug:get('fahrzeug','modell','auto','kfz'),kennzeichen:kz,huFaellig:normDate(get('hu','hu_faellig','tuev','tüv','hauptuntersuchung')),oelLetzte:normDate(get('oelwechsel','oel','ölwechsel','letzter oelwechsel')),inspLetzte:normDate(get('inspektion','letzte inspektion'))};
+    let c=customers.find(x=>(kz&&x.kennzeichen&&x.kennzeichen.toLowerCase()===kz.toLowerCase())||x.name.toLowerCase()===name.toLowerCase());
+    if(c){Object.assign(c,data);c.oelInt=c.oelInt||12;c.inspInt=c.inspInt||24;upd++;}
+    else{customers.push({id:uid(),oelInt:12,inspInt:24,...data});add++;}
+  });
+  save(K.cust,customers);renderNav();alert('CSV-Import: '+add+' neu, '+upd+' aktualisiert.');renderCustomers();
+}catch(err){alert('CSV konnte nicht gelesen werden. Bitte die Vorlage nutzen (Spalten mit ; getrennt).');}};r.readAsText(f);}
+function remindersCSV(){const rems=computeReminders();const rows=[['Kunde','Art','Fahrzeug','Kennzeichen','Faellig','TageBis','Email','Telefon']].concat(rems.map(r=>[r.c.name,r.titel,r.c.fahrzeug||'',r.c.kennzeichen||'',r.datum,r.days,r.c.email||'',r.c.tel||'']));dl(rows.map(r=>r.map(x=>String(x).replace(/;/g,',')).join(';')).join('\n'),'faellige-erinnerungen-'+todayISO()+'.csv','text/csv');}
+function num(s){s=String(s).trim();if(s.includes(','))s=s.replace(/\./g,'').replace(',','.');return parseFloat(s)||0;}
+
+/* Rechnungen importieren (aus Kassensystem) */
+function invoiceCsvTemplate(){dl('Nr;Datum;Kunde;Netto;Brutto;Status\nRE-2026-0100;2026-06-01;Max Mustermann;100,00;119,00;offen\n','rechnungen-import-vorlage.csv','text/csv');}
+function importInvoicesCSV(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const rows=parseCSV(r.result);let add=0,skip=0;rows.forEach(row=>{const g=(...k)=>{for(const x of k)if(row[x])return row[x];return'';};const no=g('nr','nummer','rechnungsnr','rechnungsnummer');const kunde=g('kunde','name','kundenname');if(!no&&!kunde)return;if(no&&invoices.some(i=>i.no===no)){skip++;return;}let brutto=num(g('brutto','betrag','summe')),netto=num(g('netto'));if(!netto&&brutto)netto=brutto/1.19;if(!brutto&&netto)brutto=netto*1.19;const status=(g('status')||'offen').toLowerCase().includes('bezahl')?'bezahlt':'offen';const datum=normDate(g('datum'))||todayISO();invoices.push({id:uid(),belegart:'rechnung',no:no||(settings.prefix+new Date(datum).getFullYear()+'-'+String(settings.nextNo++).padStart(4,'0')),datum,leistungsdatum:datum,kunde:{name:kunde,strasse:'',plz:'',ort:''},kundeId:'',positionen:[{bez:'Übernahme aus Kassensystem',menge:1,einzel:+netto.toFixed(2),mwst:settings.kleinunternehmer?0:19}],netto:+netto.toFixed(2),steuer:+(brutto-netto).toFixed(2),brutto:+brutto.toFixed(2),status,createdAt:Date.now(),_imported:true});add++;});save(K.set,settings);save(K.inv,invoices);alert('Rechnungs-Import: '+add+' neu'+(skip?', '+skip+' übersprungen (Nr. vorhanden)':''));render();}catch(err){alert('CSV fehlerhaft. Bitte Vorlage nutzen.');}};r.readAsText(f);}
+
+/* Zahlungsabgleich (Bank-CSV) */
+function paymentCsvTemplate(){dl('Datum;Betrag;Verwendungszweck\n2026-06-05;119,00;Zahlung Rechnung RE-2026-0100\n','zahlungen-import-vorlage.csv','text/csv');}
+function importPaymentsCSV(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const rows=parseCSV(r.result);let m=0,u=0;rows.forEach(row=>{const g=(...k)=>{for(const x of k)if(row[x])return row[x];return'';};const betrag=num(g('betrag','summe','haben','umsatz'));const zweck=(g('verwendungszweck','zweck','verwendung','text','buchungstext')||'').toLowerCase();const datum=normDate(g('datum','buchungstag'))||todayISO();if(!betrag)return;const open=invoices.filter(i=>i.belegart==='rechnung'&&i.status!=='bezahlt');let inv=open.find(i=>i.no&&zweck.includes(i.no.toLowerCase()));if(!inv)inv=open.find(i=>Math.abs(i.brutto-betrag)<0.01);if(inv){inv.status='bezahlt';inv.bezahltAm=datum;m++;}else u++;});save(K.inv,invoices);alert('Zahlungsabgleich: '+m+' als bezahlt markiert'+(u?', '+u+' ohne Treffer':''));render();}catch(err){alert('CSV fehlerhaft. Bitte Vorlage nutzen.');}};r.readAsText(f);}
+
+/* KOSTEN / EÜR */
+function renderFinanzen(){
+  const y=finYear;
+  const bez=invoices.filter(i=>i.belegart==='rechnung'&&i.status==='bezahlt'&&new Date(i.bezahltAm||i.datum).getFullYear()===y);
+  const einN=bez.reduce((s,i)=>s+i.netto,0),ust=bez.reduce((s,i)=>s+(i.steuer||0),0);
+  const exY=expenses.filter(e=>new Date(e.datum).getFullYear()===y);
+  const ausN=exY.reduce((s,e)=>s+e.netto,0),vor=exY.reduce((s,e)=>s+(e.brutto-e.netto),0);
+  const gewinn=einN-ausN,zahllast=ust-vor;
+  const years=[...new Set([new Date().getFullYear(),...invoices.map(i=>new Date(i.datum).getFullYear()),...expenses.map(e=>new Date(e.datum).getFullYear())])].sort((a,b)=>b-a);
+  main.innerHTML=`<div class="toolbar"><div><h2>Kosten &amp; Finanzen</h2><div class="muted">Einnahmen-Überschuss-Übersicht (EÜR) fürs Finanzamt · Zufluss-/Abflussprinzip</div></div>
+   <select class="i" style="width:auto" onchange="finYear=+this.value;render()">${years.map(yy=>`<option ${yy===y?'selected':''}>${yy}</option>`).join('')}</select></div>
+   <div class="kpi">
+     <div class="c"><div class="n" style="color:var(--green-deep)">${eur(einN)}</div><div class="l">Einnahmen netto ${y}</div></div>
+     <div class="c"><div class="n" style="color:var(--red)">${eur(ausN)}</div><div class="l">Ausgaben netto</div></div>
+     <div class="c"><div class="n">${eur(gewinn)}</div><div class="l">Gewinn (EÜR)</div></div>
+   </div>
+   ${settings.kleinunternehmer?`<div class="hint">Kleinunternehmer § 19 UStG: keine Umsatzsteuer/Vorsteuer.</div>`:`<div class="kpi">
+     <div class="c"><div class="n">${eur(ust)}</div><div class="l">USt eingenommen</div></div>
+     <div class="c"><div class="n">${eur(vor)}</div><div class="l">Vorsteuer (aus Kosten)</div></div>
+     <div class="c"><div class="n" style="color:var(--amber)">${eur(zahllast)}</div><div class="l">USt-Zahllast ans FA</div></div>
+   </div>`}
+   <div class="row" style="margin:6px 0 14px">
+     <button class="btn sec sm" onclick="document.getElementById('expin').click()">Kosten importieren (CSV)</button>
+     <button class="btn ghost sm" onclick="expTemplate()">Vorlage Kosten</button>
+     <button class="btn ghost sm" onclick="euerExport(${y})">EÜR-Export</button>
+     <button class="btn ghost sm" onclick="datevExport(${y})">DATEV-Buchungsstapel</button>
+     <input type="file" id="expin" accept=".csv" style="display:none" onchange="importExpCSV(event)">
+     <button class="btn" style="margin-left:auto" onclick="editExp()">+ Kosten erfassen</button>
+   </div>
+   <div id="expForm"></div>
+   ${exY.length?`<div class="card" style="padding:0;overflow-x:auto"><table><thead><tr><th>Datum</th><th>Beschreibung</th><th>Kategorie</th><th>Lieferant</th><th class="num">Netto</th><th class="num">Brutto</th><th></th></tr></thead>
+   <tbody>${[...exY].sort((a,b)=>b.datum.localeCompare(a.datum)).map(e=>`<tr><td>${deDate(e.datum)}</td><td>${esc(e.beschreibung)}</td><td>${esc(e.kategorie)}</td><td>${esc(e.lieferant||'')}</td><td class="num">${eur(e.netto)}</td><td class="num">${eur(e.brutto)}</td>
+   <td class="num"><button class="btn ghost sm" onclick="editExp('${e.id}')">Bearb.</button><button class="btn ghost sm" style="color:var(--red)" onclick="delExp('${e.id}')">✕</button></td></tr>`).join('')}</tbody></table></div>`:`<div class="empty">Noch keine Kosten für ${y}. Erfasse Belege oder importiere sie per CSV.</div>`}`;
+}
+function editExp(id){const e=id?expenses.find(x=>x.id===id):{id:uid(),datum:todayISO(),beschreibung:'',kategorie:KAT[0],netto:0,brutto:0,mwst:19,lieferant:''};
+  document.getElementById('expForm').innerHTML=`<div class="card" style="margin-bottom:14px"><b>${id?'Kosten bearbeiten':'Neue Kosten / Beleg'}</b>
+  <div class="grid g3" style="margin-top:10px">
+   <div><label class="f">Datum</label><input class="i" type="date" id="e_dat" value="${e.datum}"></div>
+   <div style="grid-column:span 2"><label class="f">Beschreibung</label><input class="i" id="e_desc" value="${esc(e.beschreibung)}"></div>
+   <div><label class="f">Kategorie</label><select class="i" id="e_kat">${KAT.map(k=>`<option ${k===e.kategorie?'selected':''}>${k}</option>`).join('')}</select></div>
+   <div><label class="f">Lieferant</label><input class="i" id="e_lief" value="${esc(e.lieferant||'')}"></div>
+   <div></div>
+   <div><label class="f">Betrag brutto €</label><input class="i" type="number" step="0.01" id="e_brut" value="${e.brutto}" oninput="const mw=+document.getElementById('e_mwst').value;document.getElementById('e_net').value=(this.value/(1+mw/100)).toFixed(2)"></div>
+   <div><label class="f">MwSt %</label><select class="i" id="e_mwst" onchange="const b=+document.getElementById('e_brut').value;document.getElementById('e_net').value=(b/(1+this.value/100)).toFixed(2)">${[19,7,0].map(x=>`<option ${x===(e.mwst??19)?'selected':''}>${x}</option>`).join('')}</select></div>
+   <div><label class="f">Netto €</label><input class="i" type="number" step="0.01" id="e_net" value="${e.netto}"></div>
+  </div>
+  <div class="row" style="margin-top:12px"><button class="btn" onclick="saveExp('${e.id}',${!!id})">Speichern</button><button class="btn sec" onclick="document.getElementById('expForm').innerHTML=''">Abbrechen</button></div></div>`;
+}
+function saveExp(id,exists){const brutto=+v('e_brut'),mw=+document.getElementById('e_mwst').value;let netto=+v('e_net');if(!netto&&brutto)netto=brutto/(1+mw/100);const e={id,datum:v('e_dat'),beschreibung:v('e_desc'),kategorie:document.getElementById('e_kat').value,lieferant:v('e_lief'),brutto,netto:+(+netto).toFixed(2),mwst:mw};if(!e.beschreibung||!brutto){alert('Beschreibung und Betrag nötig.');return;}if(exists){const i=expenses.findIndex(x=>x.id===id);expenses[i]=e;}else expenses.push(e);save('kfz_expenses',expenses);renderFinanzen();}
+function delExp(id){if(confirm('Kosten löschen?')){expenses=expenses.filter(x=>x.id!==id);save('kfz_expenses',expenses);renderFinanzen();}}
+function expTemplate(){dl('Datum;Beschreibung;Kategorie;Netto;Brutto;MwSt;Lieferant\n2026-06-01;Ersatzteile Bremsen;Ersatzteile / Wareneinkauf;100,00;119,00;19;Teilehändler XY\n','kosten-import-vorlage.csv','text/csv');}
+function importExpCSV(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const rows=parseCSV(r.result);let add=0;rows.forEach(row=>{const g=(...k)=>{for(const x of k)if(row[x])return row[x];return'';};const desc=g('beschreibung','text','zweck','verwendungszweck');if(!desc)return;let brutto=num(g('brutto','betrag')),mw=+g('mwst','ust')||0,netto=num(g('netto'));if(!netto&&brutto)netto=brutto/(1+mw/100);if(!brutto&&netto)brutto=netto*(1+mw/100);expenses.push({id:uid(),datum:normDate(g('datum'))||todayISO(),beschreibung:desc,kategorie:g('kategorie','kat')||'Sonstiges',lieferant:g('lieferant','händler','haendler'),brutto:+brutto.toFixed(2),netto:+netto.toFixed(2),mwst:mw});add++;});save('kfz_expenses',expenses);alert('Kosten-Import: '+add+' Belege.');renderFinanzen();}catch(err){alert('CSV fehlerhaft.');}};r.readAsText(f);}
+function euerExport(y){const bez=invoices.filter(i=>i.belegart==='rechnung'&&i.status==='bezahlt'&&new Date(i.bezahltAm||i.datum).getFullYear()===y);const exY=expenses.filter(e=>new Date(e.datum).getFullYear()===y);const rows=[['Typ','Datum','Beleg/Beschreibung','Kunde/Lieferant','Kategorie','Netto','MwSt/Vorsteuer','Brutto']];bez.forEach(i=>rows.push(['Einnahme',i.bezahltAm||i.datum,i.no,i.kunde.name,'Umsatz',i.netto.toFixed(2),(i.steuer||0).toFixed(2),i.brutto.toFixed(2)]));exY.forEach(e=>rows.push(['Ausgabe',e.datum,e.beschreibung,e.lieferant||'',e.kategorie,e.netto.toFixed(2),(e.brutto-e.netto).toFixed(2),e.brutto.toFixed(2)]));dl(rows.map(r=>r.map(x=>String(x).replace(/;/g,',')).join(';')).join('\n'),'euer-'+y+'.csv','text/csv');}
+
+function loadDemo(){
+  if(!confirm('Beispieldaten laden? Überschreibt vorhandene Kunden, Belege und Kosten.'))return;
+  const names=['Thomas Berg','Sabine Klein','Yusuf Demir','Anna Wolf','Markus Feld','Elena Roth','Kai Sommer','Petra Lang','Ömer Yıldız','Julia Braun'];
+  const cars=['VW Golf','BMW 320d','Opel Astra','Audi A4','Mercedes C200','Ford Focus','Skoda Octavia','VW Passat'];
+  customers=names.map((n,i)=>({id:uid(),name:n,tel:'0151'+(1000000+i*37),email:n.split(' ')[0].toLowerCase()+'@mail.de',geburtstag:('19'+(70+i))+'-'+pad2((i%12)+1)+'-'+pad2((i*2%27)+1),fahrzeug:cars[i%cars.length],kennzeichen:'GM-'+String.fromCharCode(65+i)+String.fromCharCode(66+(i%20))+(100+i),huFaellig:addMonths(todayISO(),(i%6)-1),oelLetzte:addMonths(todayISO(),-(i%12)-1),oelInt:12,inspLetzte:addMonths(todayISO(),-(i%18)),inspInt:24}));
+  save(K.cust,customers);
+  const now=new Date();invoices=[];let noC=100;
+  for(let m=11;m>=0;m--){const cnt=2+Math.floor(Math.random()*4);for(let k=0;k<cnt;k++){const d=new Date(now.getFullYear(),now.getMonth()-m,3+Math.floor(Math.random()*24));const iso=isoOf(d);const cust=customers[Math.floor(Math.random()*customers.length)];const npos=1+Math.floor(Math.random()*3);const positionen=[];for(let z=0;z<npos;z++){const it=items[Math.floor(Math.random()*items.length)];positionen.push({bez:it.name,menge:1,einzel:it.preis,mwst:19});}const netto=positionen.reduce((s,p)=>s+p.einzel,0);const steuer=netto*0.19;const brutto=netto+steuer;const overdue=(m===0&&Math.random()<0.5);const paid=!overdue&&Math.random()<0.82;invoices.push({id:uid(),belegart:'rechnung',no:'RE-'+d.getFullYear()+'-'+String(noC++).padStart(4,'0'),datum:iso,leistungsdatum:iso,kunde:{name:cust.name,strasse:'',plz:'',ort:'Gummersbach'},kundeId:cust.id,positionen,netto:+netto.toFixed(2),steuer:+steuer.toFixed(2),brutto:+brutto.toFixed(2),status:paid?'bezahlt':'offen',bezahltAm:paid?iso:undefined,createdAt:d.getTime()});}}
+  settings.nextNo=noC;save(K.set,settings);save(K.inv,invoices);
+  expenses=[];const bes=['Ersatzteile Bosch','Werkzeug Hazet','Werkstattmiete','Betriebshaftpflicht','Google Ads','Reifen Großhandel','Diagnosegerät','Arbeitskleidung'];
+  for(let m=11;m>=0;m--){const d=new Date(now.getFullYear(),now.getMonth()-m,10);const brutto=200+Math.floor(Math.random()*1100);expenses.push({id:uid(),datum:isoOf(d),beschreibung:bes[m%bes.length],kategorie:KAT[m%KAT.length],lieferant:'Lieferant '+((m%4)+1),brutto,netto:+(brutto/1.19).toFixed(2),mwst:19});}
+  save('kfz_expenses',expenses);
+  appointments=[];const leist=['Ölwechsel','HU/AU','Reifenwechsel','Inspektion','Bremsen','Klimaservice'];for(let k=0;k<6;k++){const c=customers[k%customers.length];const dd=new Date(now);dd.setDate(dd.getDate()+(k-2)*2);appointments.push({id:uid(),datum:isoOf(dd),uhrzeit:['08:30','09:00','10:30','13:00','14:30','16:00'][k],kundeId:c.id,kunde:c.name,fahrzeug:c.fahrzeug,leistung:leist[k%leist.length],status:isoOf(dd)<todayISO()?'erledigt':'geplant'});}save('kfz_appointments',appointments);
+  parts=[['BRE-1234','Bremsbeläge vorne','Stahlgruber',18.5,39.9,6,2],['OEL-5W30','Motoröl 5W-30 (1L)','Wessels+Müller',6.2,12.9,1,4],['FIL-OIL','Ölfilter universal','PV Automotive',3.1,9.9,12,4],['REI-205','Reifen 205/55 R16','Reifen-Großhandel',52,89,2,4],['BAT-72','Autobatterie 72Ah','Coler',61,119,0,1],['ZUE-4','Zündkerzen (4er Satz)','Stahlgruber',9.4,24.9,8,3]].map(([nr,n,l,ek,vk,b,mb])=>({id:uid(),nummer:nr,name:n,lieferant:l,ek,vk,bestand:b,minBestand:mb}));save('kfz_parts',parts);
+  renderNav();go('dashboard');
+}
+function resetAll(){if(!confirm('Wirklich ALLE Daten löschen? Das kann nicht rückgängig gemacht werden.'))return;['kfz_customers','kfz_invoices','kfz_expenses','kfz_appointments','kfz_parts'].forEach(k=>localStorage.removeItem(k));customers=[];invoices=[];expenses=[];appointments=[];parts=[];settings.nextNo=1;settings.nextKva=1;save(K.set,settings);renderNav();go('dashboard');}
+/* ---------- TERMINE ---------- */
+function apptToday(){return appointments.filter(a=>a.datum===todayISO()&&a.status!=='abgesagt').length;}
+function apptRow(a){const c=customers.find(x=>x.id===a.kundeId);const em=c?c.email:'';const ctx={name:a.kunde,fahrzeug:a.fahrzeug||'',kennzeichen:(c&&c.kennzeichen)||'',leistung:a.leistung||'',firma:settings.firma,uhrzeit:a.uhrzeit?(' um '+a.uhrzeit+' Uhr'):''};
+  const st=a.status||'geplant';const stc={geplant:'offen',erledigt:'bezahlt',abgesagt:'abgelehnt'}[st];
+  return `<div class="rep"><div class="ti2">📅</div><div><b>${deDate(a.datum)}${a.uhrzeit?' · '+a.uhrzeit:''} · ${esc(a.kunde)}</b><small>${esc(((a.fahrzeug||'')+' '+(a.leistung||'')).trim())||'—'} · <span class="pill ${stc}">${st}</span></small></div>
+   <div class="repact">${em?`<a class="btn ghost sm" href="${mailLink(em,settings.tpl.terminbestaetigung,ctx,a.datum)}">✉ Bestätigung</a>`:''}<button class="btn ghost sm" onclick="editAppt('${a.id}')">Bearb.</button><button class="btn ghost sm" style="color:var(--red)" onclick="delAppt('${a.id}')">✕</button></div></div>`;}
+function renderTermine(){
+  const upcoming=[...appointments].filter(a=>a.datum>=todayISO()).sort((a,b)=>(a.datum+(a.uhrzeit||'')).localeCompare(b.datum+(b.uhrzeit||'')));
+  const past=[...appointments].filter(a=>a.datum<todayISO()).sort((a,b)=>b.datum.localeCompare(a.datum));
+  const heute=appointments.filter(a=>a.datum===todayISO()).length;
+  main.innerHTML=`<div class="crumb">Arbeitsplatz › <b>Termine</b></div>
+  <div class="head"><div><h1>Termine</h1><div class="hsub">${appointments.length} Termine · <b>${heute}</b> heute</div></div>
+    <div class="hact"><button class="btn" onclick="editAppt()"><svg class="i16" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Neuer Termin</button></div></div>
+  <div id="apptForm"></div>
+  <div class="card ch"><div class="chh"><div class="ti">${iconSvg(ICON.kalender)}</div><b>Anstehend</b></div>
+   ${upcoming.length?upcoming.map(apptRow).join(''):'<div class="empty" style="margin-top:10px">Keine anstehenden Termine.</div>'}</div>
+  ${past.length?`<div class="card ch" style="margin-top:16px"><div class="chh"><div class="ti">${iconSvg(ICON.kalender)}</div><b>Vergangen</b></div>${past.slice(0,20).map(apptRow).join('')}</div>`:''}`;
+}
+function editAppt(id){const a=id?appointments.find(x=>x.id===id):{id:uid(),datum:todayISO(),uhrzeit:'09:00',kundeId:'',kunde:'',fahrzeug:'',leistung:'',status:'geplant'};
+  document.getElementById('apptForm').innerHTML=`<div class="card" style="margin-bottom:16px"><b>${id?'Termin bearbeiten':'Neuer Termin'}</b>
+  <div class="grid g3" style="margin-top:10px">
+    <div><label class="f">Datum</label><input class="i" type="date" id="a_dat" value="${a.datum}"></div>
+    <div><label class="f">Uhrzeit</label><input class="i" type="time" id="a_zeit" value="${a.uhrzeit||''}"></div>
+    <div><label class="f">Status</label><select class="i" id="a_stat">${['geplant','erledigt','abgesagt'].map(s=>`<option ${s===a.status?'selected':''}>${s}</option>`).join('')}</select></div>
+    <div><label class="f">Kunde</label><select class="i" id="a_kunde" onchange="apptPick(this.value)"><option value="">— wählen —</option>${customers.map(c=>`<option value="${c.id}" ${c.id===a.kundeId?'selected':''}>${esc(c.name)}</option>`).join('')}</select></div>
+    <div><label class="f">Fahrzeug</label><input class="i" id="a_fz" value="${esc(a.fahrzeug)}"></div>
+    <div><label class="f">Leistung</label><input class="i" id="a_leist" value="${esc(a.leistung)}"></div>
+  </div>
+  <div class="row" style="margin-top:12px"><button class="btn" onclick="saveAppt('${a.id}',${!!id})">Speichern</button><button class="btn sec" onclick="document.getElementById('apptForm').innerHTML=''">Abbrechen</button></div></div>`;
+}
+function apptPick(id){const c=customers.find(x=>x.id===id);if(c&&!v('a_fz'))document.getElementById('a_fz').value=c.fahrzeug||'';}
+function saveAppt(id,exists){const kid=document.getElementById('a_kunde').value;const c=customers.find(x=>x.id===kid);if(!c){alert('Bitte einen Kunden wählen.');return;}const a={id,datum:v('a_dat'),uhrzeit:v('a_zeit'),kundeId:kid,kunde:c.name,fahrzeug:v('a_fz'),leistung:v('a_leist'),status:document.getElementById('a_stat').value};if(!a.datum){alert('Datum fehlt');return;}if(exists){const i=appointments.findIndex(x=>x.id===id);appointments[i]=a;}else appointments.push(a);save('kfz_appointments',appointments);renderNav();renderTermine();}
+function delAppt(id){if(confirm('Termin löschen?')){appointments=appointments.filter(x=>x.id!==id);save('kfz_appointments',appointments);renderNav();renderTermine();}}
+function custHistory(cid){const inv=invoices.filter(i=>i.kundeId===cid).sort((a,b)=>b.datum.localeCompare(a.datum));const appt=appointments.filter(a=>a.kundeId===cid).sort((a,b)=>b.datum.localeCompare(a.datum));if(!inv.length&&!appt.length)return '';
+  return `<div style="margin:14px 0 8px;font-weight:700;color:var(--green-deep)">Historie</div>
+  ${inv.length?`<div style="overflow-x:auto"><table><thead><tr><th>Datum</th><th>Beleg</th><th class="num">Brutto</th><th>Status</th></tr></thead><tbody>${inv.slice(0,12).map(i=>`<tr><td>${deDate(i.datum)}</td><td>${esc(i.no)}</td><td class="num">${eur(i.brutto)}</td><td><span class="pill ${i.status}">${i.status}</span></td></tr>`).join('')}</tbody></table></div>`:'<div class="muted">Noch keine Belege.</div>'}
+  ${appt.length?`<div class="muted" style="margin-top:8px">Termine: ${appt.slice(0,6).map(a=>deDate(a.datum)+(a.leistung?' ('+esc(a.leistung)+')':'')).join(' · ')}</div>`:''}`;}
+function datevExport(y){const bez=invoices.filter(i=>i.belegart==='rechnung'&&i.status==='bezahlt'&&new Date(i.bezahltAm||i.datum).getFullYear()===y);const exY=expenses.filter(e=>new Date(e.datum).getFullYear()===y);
+  const rows=[['Umsatz(Brutto)','Soll/Haben','Konto','Gegenkonto','Belegdatum','Belegfeld1','Buchungstext','Steuersatz']];
+  bez.forEach(i=>rows.push([i.brutto.toFixed(2).replace('.',','),'H','8400','1200',deDate(i.bezahltAm||i.datum),i.no,'Umsatz '+(i.kunde.name||''),settings.kleinunternehmer?'0':'19']));
+  exY.forEach(e=>rows.push([e.brutto.toFixed(2).replace('.',','),'S','4980','1200',deDate(e.datum),'','Kosten '+(e.beschreibung||''),String(e.mwst||0)]));
+  dl(rows.map(r=>r.join(';')).join('\n'),'datev-buchungsstapel-'+y+'.csv','text/csv');}
+/* ---------- TEILE / LAGER ---------- */
+function lowStockParts(){return parts.filter(p=>(+p.bestand||0)<=(+p.minBestand||0));}
+function renderParts(){
+  const low=lowStockParts();
+  main.innerHTML=`<div class="crumb">Arbeitsplatz › <b>Teile / Lager</b></div>
+  <div class="head"><div><h1>Teile &amp; Lager</h1><div class="hsub">${parts.length} Artikel · <b style="color:${low.length?'var(--red)':'var(--green-deep)'}">${low.length}</b> unter Mindestbestand</div></div>
+    <div class="hact"><button class="btn sec" onclick="partsCsvTemplate()">CSV-Vorlage</button><button class="btn sec" onclick="document.getElementById('pin').click()">Katalog importieren</button><input type="file" id="pin" accept=".csv" style="display:none" onchange="partsImportCSV(event)"><button class="btn" onclick="editPart()"><svg class="i16" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Neues Teil</button></div></div>
+  <div id="partForm"></div>
+  <div class="card ch" style="margin-bottom:14px"><div class="chh"><div class="ti"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg></div><b>Online-Katalog · Teile per Nummer suchen</b><span class="muted" style="margin-left:auto">${settings.teileConnectorUrl?'Live-Lieferant verbunden':'Demo-Katalog'}</span></div>
+    <div class="row" style="margin-top:10px"><input class="i" id="kat_q" style="flex:1;min-width:200px" placeholder="Artikel-/OE-Nummer oder Bezeichnung (z. B. Bremse, 1K0615301AA, Ölfilter)" onkeydown="if(event.key==='Enter')katalogSuche()"><button class="btn" onclick="katalogSuche()">Suchen</button></div>
+    <div id="katResults" style="margin-top:12px"></div></div>
+  ${low.length?`<div class="card ch" style="margin-bottom:14px"><div class="chh"><div class="ti">${iconSvg(ICON.box)}</div><b>Nachbestellen (unter Mindestbestand)</b><button class="btn sec sm" style="margin-left:auto" onclick="printPO()">Bestellvorschlag drucken</button></div>
+    ${low.map(p=>`<div class="rep"><div class="ti2">📦</div><div><b>${esc(p.name)}${p.nummer?' · '+esc(p.nummer):''}</b><small>Lieferant: ${esc(p.lieferant||'—')} · Bestand ${p.bestand||0} / min ${p.minBestand||0}</small></div><div class="repact"><button class="btn ghost sm" onclick="editPart('${p.id}')">Bearb.</button></div></div>`).join('')}</div>`:''}
+  <div class="card" style="padding:0;overflow-x:auto"><table><thead><tr><th>Nummer</th><th>Bezeichnung</th><th>Lieferant</th><th class="num">EK</th><th class="num">VK</th><th class="num">Bestand</th><th></th></tr></thead>
+  <tbody>${parts.length?parts.map(p=>`<tr><td>${esc(p.nummer||'')}</td><td><b>${esc(p.name)}</b></td><td>${esc(p.lieferant||'')}</td><td class="num">${eur(p.ek)}</td><td class="num">${eur(p.vk)}</td><td class="num" style="${(+p.bestand||0)<=(+p.minBestand||0)?'color:var(--red);font-weight:800':''}">${p.bestand||0}</td><td class="num"><button class="btn ghost sm" onclick="editPart('${p.id}')">Bearb.</button><button class="btn ghost sm" style="color:var(--red)" onclick="delPart('${p.id}')">✕</button></td></tr>`).join(''):'<tr><td colspan="7"><div class="muted" style="padding:16px">Noch keine Teile. Leg welche an oder importiere einen Katalog (CSV / Datanorm-Export).</div></td></tr>'}</tbody></table></div>`;
+}
+function editPart(id){const p=id?parts.find(x=>x.id===id):{id:uid(),nummer:'',name:'',lieferant:'',ek:0,vk:0,bestand:0,minBestand:1};
+  document.getElementById('partForm').innerHTML=`<div class="card" style="margin-bottom:14px"><b>${id?'Teil bearbeiten':'Neues Teil'}</b>
+  <div class="grid g3" style="margin-top:10px">
+   <div><label class="f">Artikel-/OE-Nummer</label><input class="i" id="p_nr" value="${esc(p.nummer)}"></div>
+   <div style="grid-column:span 2"><label class="f">Bezeichnung</label><input class="i" id="p_name" value="${esc(p.name)}"></div>
+   <div><label class="f">Lieferant</label><input class="i" id="p_lief" value="${esc(p.lieferant)}"></div>
+   <div><label class="f">EK netto €</label><input class="i" type="number" step="0.01" id="p_ek" value="${p.ek}"></div>
+   <div><label class="f">VK netto €</label><input class="i" type="number" step="0.01" id="p_vk" value="${p.vk}"></div>
+   <div><label class="f">Bestand</label><input class="i" type="number" id="p_best" value="${p.bestand}"></div>
+   <div><label class="f">Mindestbestand</label><input class="i" type="number" id="p_min" value="${p.minBestand}"></div>
+  </div><div class="row" style="margin-top:12px"><button class="btn" onclick="savePart('${p.id}',${!!id})">Speichern</button><button class="btn sec" onclick="document.getElementById('partForm').innerHTML=''">Abbrechen</button></div></div>`;
+}
+function savePart(id,exists){const p={id,nummer:v('p_nr'),name:v('p_name'),lieferant:v('p_lief'),ek:+v('p_ek'),vk:+v('p_vk'),bestand:+v('p_best'),minBestand:+v('p_min')};if(!p.name){alert('Bezeichnung fehlt');return;}if(exists){const i=parts.findIndex(x=>x.id===id);parts[i]=p;}else parts.push(p);save('kfz_parts',parts);renderNav();renderParts();}
+function delPart(id){if(confirm('Teil löschen?')){parts=parts.filter(x=>x.id!==id);save('kfz_parts',parts);renderNav();renderParts();}}
+function partsCsvTemplate(){dl('Nummer;Bezeichnung;Lieferant;EK;VK;Bestand;Mindestbestand\nBRE-1234;Bremsbeläge vorne;Stahlgruber;18,50;39,90;4;2\n','teile-import-vorlage.csv','text/csv');}
+function partsImportCSV(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const rows=parseCSV(r.result);let add=0,upd=0;rows.forEach(row=>{const g=(...k)=>{for(const x of k)if(row[x])return row[x];return'';};const nr=g('nummer','artikelnummer','oe','oe-nummer','artikel-nr');const name=g('bezeichnung','name','artikel');if(!name&&!nr)return;const data={nummer:nr,name:name||nr,lieferant:g('lieferant','händler','haendler'),ek:num(g('ek','einkauf','einkaufspreis')),vk:num(g('vk','verkauf','verkaufspreis','preis')),bestand:+num(g('bestand','menge'))||0,minBestand:+num(g('mindestbestand','min'))||0};let ex=parts.find(x=>nr&&x.nummer&&x.nummer.toLowerCase()===nr.toLowerCase());if(ex){Object.assign(ex,data);upd++;}else{parts.push({id:uid(),...data});add++;}});save('kfz_parts',parts);renderNav();alert('Teile-Import: '+add+' neu, '+upd+' aktualisiert.');renderParts();}catch(err){alert('CSV fehlerhaft. Bitte Vorlage nutzen.');}};r.readAsText(f);}
+function addPartPos(pid){const p=parts.find(x=>x.id===pid);if(p)draft.positionen.push({bez:p.name+(p.nummer?' ('+p.nummer+')':''),menge:1,einzel:p.vk,mwst:settings.kleinunternehmer?0:19,partId:p.id});renderPos();}
+function printPO(){const low=lowStockParts();if(!low.length){alert('Keine Teile unter Mindestbestand.');return;}const byLief={};low.forEach(p=>{(byLief[p.lieferant||'Unbekannt']=byLief[p.lieferant||'Unbekannt']||[]).push(p);});const s=settings;
+  document.getElementById('printArea').innerHTML=`<div class="inv"><div class="top"><div><div class="absender">${esc(s.firma)}</div><div style="margin-top:10px;font-weight:700">Bestellvorschlag</div><div>${deDate(todayISO())}</div></div><div style="text-align:right"><div class="logo">${esc(s.firma)}</div><div style="font-size:11px;color:#555;margin-top:6px">${esc(s.strasse)}<br>${esc(s.plz)} ${esc(s.ort)}<br>${esc(s.tel)}</div></div></div>
+  <h1>Nachbestellung</h1>
+  ${Object.entries(byLief).map(([lief,arr])=>`<h3 style="margin:16px 0 4px">${esc(lief)}</h3><table><thead><tr><th>Nummer</th><th>Bezeichnung</th><th style="text-align:right">Bestand</th><th style="text-align:right">Min</th><th style="text-align:right">Bestellen</th></tr></thead><tbody>${arr.map(p=>`<tr><td>${esc(p.nummer||'')}</td><td>${esc(p.name)}</td><td style="text-align:right">${p.bestand||0}</td><td style="text-align:right">${p.minBestand||0}</td><td style="text-align:right">${Math.max(1,2*(+p.minBestand||0)-(+p.bestand||0))}</td></tr>`).join('')}</tbody></table>`).join('')}
+  </div>`;
+  window.print();
+}
+/* ---------- ONLINE-KATALOG (Live-Connector oder Demo-Katalog) ---------- */
+const TEILE_KATALOG=[
+ {nummer:'BRE-1234',oe:'1K0615301AA',name:'Bremsscheibe vorne 312mm',hersteller:'ATE',lieferant:'Wessels+Müller',ek:34.50,vk:69.00,verfuegbar:8,lieferzeit:'heute'},
+ {nummer:'BRE-2210',oe:'1K0698451',name:'Bremsbeläge vorne (Satz)',hersteller:'Bosch',lieferant:'Wessels+Müller',ek:22.00,vk:48.00,verfuegbar:15,lieferzeit:'heute'},
+ {nummer:'OEL-5W30',oe:'VW50700',name:'Motoröl 5W-30 Longlife 5L',hersteller:'Castrol',lieferant:'Stahlgruber',ek:28.90,vk:54.90,verfuegbar:40,lieferzeit:'heute'},
+ {nummer:'FIL-OIL',oe:'03N115562B',name:'Ölfilter',hersteller:'MANN',lieferant:'Stahlgruber',ek:6.20,vk:14.90,verfuegbar:33,lieferzeit:'heute'},
+ {nummer:'FIL-AIR',oe:'1K0129620D',name:'Luftfilter',hersteller:'MANN',lieferant:'Stahlgruber',ek:9.80,vk:22.00,verfuegbar:21,lieferzeit:'heute'},
+ {nummer:'FIL-INN',oe:'1K1819653B',name:'Innenraumfilter Aktivkohle',hersteller:'Bosch',lieferant:'PV Automotive',ek:8.40,vk:24.00,verfuegbar:18,lieferzeit:'1 Tag'},
+ {nummer:'BAT-72',oe:'000915105DE',name:'Starterbatterie 72Ah',hersteller:'Varta',lieferant:'Coler',ek:78.00,vk:139.00,verfuegbar:5,lieferzeit:'1 Tag'},
+ {nummer:'ZUE-4',oe:'101905601F',name:'Zündkerzen (4er Satz)',hersteller:'NGK',lieferant:'PV Automotive',ek:16.00,vk:39.00,verfuegbar:12,lieferzeit:'heute'},
+ {nummer:'REI-205',oe:'',name:'Reifen 205/55 R16 91V',hersteller:'Continental',lieferant:'Reifen Krieg',ek:62.00,vk:99.00,verfuegbar:24,lieferzeit:'heute'},
+ {nummer:'STO-311',oe:'5Q0413031',name:'Stoßdämpfer vorne',hersteller:'Sachs',lieferant:'Stahlgruber',ek:54.00,vk:109.00,verfuegbar:4,lieferzeit:'1 Tag'},
+ {nummer:'KEI-6PK',oe:'03L903137T',name:'Keilrippenriemen 6PK1841',hersteller:'ContiTech',lieferant:'Wessels+Müller',ek:12.50,vk:29.00,verfuegbar:9,lieferzeit:'heute'},
+ {nummer:'WAS-KIT',oe:'1K0998002',name:'Wasserpumpe + Zahnriemen-Kit',hersteller:'INA',lieferant:'Coler',ek:89.00,vk:189.00,verfuegbar:3,lieferzeit:'2 Tage'},
+];
+let katLast=[];
+async function katalogFetch(q){
+  const url=(settings.teileConnectorUrl||'').trim();
+  if(url){ // Live-Connector (selbst-gehostet)
+    const r=await fetch(url.replace(/\/$/,'')+'/teile/suche',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:q,oe:q,limit:25})});
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    const d=await r.json();return (d.treffer||[]).map(t=>({nummer:t.artikelnr||t.nummer||'',oe:t.oe||'',name:t.bezeichnung||t.name||'',hersteller:t.hersteller||'',lieferant:t.lieferant||'',ek:t.ekPreis??t.ek??0,vk:t.vkPreis??t.vk??0,verfuegbar:t.verfuegbar,lieferzeit:t.lieferzeit}));
+  }
+  const s=q.toLowerCase().replace(/\s+/g,'');
+  return TEILE_KATALOG.filter(t=>!s||[t.nummer,t.oe,t.name,t.hersteller].some(x=>(x||'').toLowerCase().replace(/\s+/g,'').includes(s)));
+}
+async function katalogSuche(){
+  const q=(document.getElementById('kat_q').value||'').trim();const box=document.getElementById('katResults');
+  box.innerHTML='<div class="muted">Suche läuft…</div>';
+  try{
+    katLast=await katalogFetch(q);
+    if(!katLast.length){box.innerHTML='<div class="muted">Keine Treffer. Andere Nummer/Bezeichnung versuchen.</div>';return;}
+    box.innerHTML=`<div style="overflow-x:auto"><table><thead><tr><th>Nummer / OE</th><th>Bezeichnung</th><th>Lieferant</th><th class="num">EK</th><th class="num">VK</th><th class="num">Verf.</th><th></th></tr></thead><tbody>${katLast.map((t,i)=>`<tr><td><b>${esc(t.nummer)}</b>${t.oe?`<br><small class="muted">OE ${esc(t.oe)}</small>`:''}</td><td>${esc(t.name)}<br><small class="muted">${esc(t.hersteller||'')}</small></td><td>${esc(t.lieferant||'—')}</td><td class="num">${t.ek?eur(t.ek):'—'}</td><td class="num">${t.vk?eur(t.vk):'—'}</td><td class="num">${t.verfuegbar==null?'—':t.verfuegbar}${t.lieferzeit?`<br><small class="muted">${esc(t.lieferzeit)}</small>`:''}</td><td class="num" style="white-space:nowrap"><button class="btn ghost sm" onclick="katalogUebernehmen(${i})">→ Lager</button><button class="btn sec sm" onclick="katalogBestellen(${i})">Bestellen</button></td></tr>`).join('')}</tbody></table></div>`;
+  }catch(e){box.innerHTML=`<div class="warn">Live-Connector nicht erreichbar (${esc(String(e.message||e))}). Prüfe die Connector-URL in den Einstellungen — im Demo-Modus (URL leer) funktioniert die Suche ohne Server.</div>`;}
+}
+function katalogUebernehmen(i){const t=katLast[i];if(!t)return;const menge=+prompt('Wieviele Stück ins Lager übernehmen?','5')||0;if(menge<=0)return;
+  let ex=parts.find(p=>p.nummer&&t.nummer&&p.nummer.toLowerCase()===t.nummer.toLowerCase());
+  if(ex){ex.bestand=(+ex.bestand||0)+menge;if(t.ek)ex.ek=t.ek;if(t.vk)ex.vk=t.vk;}
+  else parts.push({id:uid(),nummer:t.nummer,name:t.name,lieferant:t.lieferant||'',ek:+t.ek||0,vk:+t.vk||0,bestand:menge,minBestand:1});
+  save('kfz_parts',parts);renderNav();alert(menge+'× '+t.name+' ins Lager übernommen.');renderParts();}
+async function katalogBestellen(i){const t=katLast[i];if(!t)return;const menge=+prompt('Menge bestellen bei '+(t.lieferant||'Lieferant')+':','1')||0;if(menge<=0)return;
+  const url=(settings.teileConnectorUrl||'').trim();
+  try{
+    let res;
+    if(url){const r=await fetch(url.replace(/\/$/,'')+'/teile/bestellung',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({positionen:[{artikelnr:t.nummer,menge}],referenz:'Werkstatt'})});if(!r.ok)throw new Error('HTTP '+r.status);res=await r.json();}
+    else res={bestellId:'DEMO-'+uid().toUpperCase(),status:'bestätigt (Demo)',voraussichtlich:t.lieferzeit||'nächster Werktag',summe:Math.round((+t.ek||0)*menge*100)/100};
+    alert(`Bestellung ${res.bestellId}\n${menge}× ${t.name}\nStatus: ${res.status}\nSumme (EK): ${eur(res.summe||(+t.ek||0)*menge)}\nLieferung: ${res.voraussichtlich||'—'}`);
+  }catch(e){alert('Bestellung fehlgeschlagen: '+(e.message||e)+'\nIm Demo-Modus (Connector-URL leer) funktioniert die Bestellung ohne Server.');}
+}
+/* ---------- CLOUD-SYNC (Supabase REST/Auth per fetch, ohne SDK) ---------- */
+const SYNC_MAP={
+  kfz_customers:{t:'kunde',cols:o=>({name:o.name,tel:o.tel,email:o.email,kennzeichen:o.kennzeichen,fahrzeug:o.fahrzeug})},
+  kfz_invoices:{t:'beleg',cols:o=>({belegart:o.belegart,no:o.no,datum:o.datum,status:o.status,brutto:o.brutto,bezahlt_am:o.bezahltAm||null,kunde_name:o.kunde&&o.kunde.name})},
+  kfz_expenses:{t:'ausgabe',cols:o=>({datum:o.datum,kategorie:o.kategorie,brutto:o.brutto})},
+  kfz_appointments:{t:'termin',cols:o=>({datum:o.datum,zeit:o.zeit,kennzeichen:o.kennzeichen,leistung:o.leistung,status:o.status,kunde_name:o.kunde,tel:o.tel})},
+  kfz_parts:{t:'teil',cols:o=>({nummer:o.nummer,bezeichnung:o.name,lieferant:o.lieferant,ek:o.ek,vk:o.vk,bestand:o.bestand,mindestbestand:o.minBestand})},
+};
+let syncTok=sessionStorage.getItem('kfz_sync_tok')||'';let syncBetrieb=sessionStorage.getItem('kfz_sync_betrieb')||'';
+function syncBase(){return (settings.syncUrl||'').trim().replace(/\/$/,'');}
+function syncHead(json){const h={apikey:settings.syncKey,Authorization:'Bearer '+(syncTok||settings.syncKey)};if(json)h['Content-Type']='application/json';return h;}
+function syncStatus(msg,cls){const el=document.getElementById('syncStat');if(el)el.innerHTML=`<span class="${cls||'muted'}">${esc(msg)}</span>`;}
+async function syncAuth(){const url=syncBase(),email=v('sy_mail'),pw=document.getElementById('sy_pw').value;
+  if(!url||!settings.syncKey){alert('Bitte Supabase-URL und anon-Key eintragen und speichern.');return;}
+  syncStatus('Anmeldung läuft…');
+  try{
+    const r=await fetch(url+'/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:settings.syncKey,'Content-Type':'application/json'},body:JSON.stringify({email,password:pw})});
+    if(!r.ok)throw new Error('Login fehlgeschlagen ('+r.status+')');
+    const d=await r.json();syncTok=d.access_token;sessionStorage.setItem('kfz_sync_tok',syncTok);
+    const p=await fetch(url+'/rest/v1/profile?select=betrieb_id,rolle',{headers:syncHead()});
+    const pj=await p.json();if(!pj.length)throw new Error('Kein Profil gefunden');
+    syncBetrieb=pj[0].betrieb_id;sessionStorage.setItem('kfz_sync_betrieb',syncBetrieb);
+    syncStatus('Angemeldet als '+esc(email)+' ('+esc(pj[0].rolle)+')','hsub');
+  }catch(e){syncStatus('Fehler: '+(e.message||e)+' — Cloud-Sync läuft nur in der selbst-gehosteten Version.','muted');}
+}
+async function syncPush(){const url=syncBase();if(!syncTok||!syncBetrieb){alert('Bitte zuerst anmelden.');return;}
+  syncStatus('Hochladen…');
+  try{
+    for(const[key,spec]of Object.entries(SYNC_MAP)){
+      const list=JSON.parse(localStorage.getItem(key)||'[]');if(!Array.isArray(list)||!list.length)continue;
+      const rows=list.map(o=>({id:o.id,betrieb_id:syncBetrieb,daten:o,updated_at:new Date().toISOString(),deleted:false,...spec.cols(o)}));
+      const r=await fetch(url+'/rest/v1/'+spec.t+'?on_conflict=betrieb_id,id',{method:'POST',headers:{...syncHead(true),Prefer:'resolution=merge-duplicates'},body:JSON.stringify(rows)});
+      if(!r.ok)throw new Error(spec.t+': '+r.status+' '+(await r.text()).slice(0,80));
+    }
+    const set=JSON.parse(localStorage.getItem('kfz_settings')||'null');
+    if(set){const r=await fetch(url+'/rest/v1/einstellung?on_conflict=betrieb_id',{method:'POST',headers:{...syncHead(true),Prefer:'resolution=merge-duplicates'},body:JSON.stringify({betrieb_id:syncBetrieb,daten:set,updated_at:new Date().toISOString()})});if(!r.ok)throw new Error('einstellung: '+r.status);}
+    syncStatus('Hochgeladen ✓','hsub');
+  }catch(e){syncStatus('Fehler beim Hochladen: '+(e.message||e),'muted');}
+}
+async function syncPull(){const url=syncBase();if(!syncTok||!syncBetrieb){alert('Bitte zuerst anmelden.');return;}
+  if(!confirm('Cloud-Daten laden und lokale überschreiben?'))return;
+  syncStatus('Herunterladen…');
+  try{
+    for(const[key,spec]of Object.entries(SYNC_MAP)){
+      const r=await fetch(url+'/rest/v1/'+spec.t+'?betrieb_id=eq.'+syncBetrieb+'&select=daten,deleted',{headers:syncHead()});
+      if(!r.ok)throw new Error(spec.t+': '+r.status);
+      const d=await r.json();localStorage.setItem(key,JSON.stringify(d.filter(x=>!x.deleted).map(x=>x.daten)));
+    }
+    const r=await fetch(url+'/rest/v1/einstellung?betrieb_id=eq.'+syncBetrieb+'&select=daten',{headers:syncHead()});
+    const ej=await r.json();if(ej.length&&ej[0].daten)localStorage.setItem('kfz_settings',JSON.stringify(ej[0].daten));
+    syncStatus('Heruntergeladen ✓ — App wird neu geladen…','hsub');setTimeout(()=>location.reload(),700);
+  }catch(e){syncStatus('Fehler beim Herunterladen: '+(e.message||e),'muted');}
+}
+const v=id=>document.getElementById(id).value.trim();
+renderNav();render();
+</script>
